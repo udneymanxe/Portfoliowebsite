@@ -88,7 +88,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
           <div className="relative h-[600px] rounded-md overflow-hidden animate-scale-in border border-primary/10 group">
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
             <img 
-              src="/mkn.jpeg"
+              src="mkn.jpeg"
               alt="Mahesh Kumar Neupane"
               className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
             />
