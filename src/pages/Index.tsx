@@ -69,7 +69,7 @@ const Index = () => {
       
       <HeroSection />
       {/* Summary Sections */}
-      <AboutSection />
+      <AboutSection isSummary={true} />
       <SkillsSection /> { /* Keep full skills section */}
       <CVSection isSummary={true} />
       <PublicationsSection /> { /* Keep full publications section */}

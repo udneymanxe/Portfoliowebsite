@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Mail, Phone, Github, Youtube } from 'lucide-react';
+import { Linkedin, Mail, Phone, Github, Youtube, Network } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -53,6 +53,15 @@ const Footer = () => {
               aria-label="YouTube Channel"
             >
               <Youtube size={18} />
+            </a>
+            <a 
+              href="https://x.com/Udneymanxe" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn-icon text-foreground hover:text-primary transition-colors"
+              aria-label="X/Twitter Profile"
+            >
+              <Network size={18} />
             </a>
             <a 
               href="https://www.tiktok.com/@neupane.life" 

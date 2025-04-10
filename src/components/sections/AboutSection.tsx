@@ -50,7 +50,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
               </div>
               <div>
                 <h3 className="text-xl font-bold animate-fade-in-up">Mahesh Kumar Neupane</h3>
-                <p className="text-muted-foreground animate-fade-in-up delay-100">Physics Aspirant & AI Enthusiast</p>
+                <p className="text-muted-foreground animate-fade-in-up delay-100">Physics and AI Enthusiast | Exploring Science & Technology</p>
               </div>
             </div>
             
@@ -95,6 +95,39 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
           </div>
         </div>
       )}
+
+      {/* New Section: My Roots */} 
+      {!isSummary && (
+        <div id="kalikot-roots" className="mt-16 pt-12 border-t border-border/50">
+           <SectionTitle 
+            title="My Roots: Kalikot, Nepal" 
+            subtitle="A glimpse into where my journey began."
+            alignment='center'
+          />
+          <div className="max-w-3xl mx-auto text-center text-muted-foreground mb-10">
+            <p>Kalikot is a remote mountain district in Nepal. Being from this unique and challenging environment has shaped my perspective and resilience. It's a place of incredible natural beauty and strong community spirit.</p>
+          </div>
+          
+          {/* Video Player */} 
+          <div className="mb-12 max-w-4xl mx-auto">
+            <h3 className="text-xl font-semibold mb-4 text-center">A Glimpse of Kalikot</h3>
+            <div className="aspect-video overflow-hidden rounded-lg shadow-lg bg-black border border-border/50">
+              <video 
+                 controls 
+                 className="w-full h-full"
+                 src={"/kalikot1.mp4"} // Root-relative path to video in public
+                 aria-label={"Video of Kalikot, Nepal"}
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          {/* Image Gallery Placeholder - Removed */}
+          
+        </div>
+      )}
+
     </section>
   );
 };
