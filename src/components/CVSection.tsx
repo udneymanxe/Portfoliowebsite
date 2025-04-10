@@ -6,7 +6,7 @@ import {
   CalendarCheck, Users, Linkedin, Github, Youtube, Mail, Phone, MapPin
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { activities } from './sections/ExtracurricularSection';
+import { activities } from '@/data/activities';
 
 interface CVSectionProps {
   isSummary?: boolean;

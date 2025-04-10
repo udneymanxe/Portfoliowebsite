@@ -6,8 +6,8 @@ import GlowingBalls from '@/components/GlowingBalls';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// Import the activities data (temporary solution - ideally fetch or use context)
-import { activities } from '@/components/sections/ExtracurricularSection';
+// Import the activities data from the new data file
+import { activities } from '@/data/activities';
 
 const ActivityPage = () => {
   const { id } = useParams<{ id: string }>();
