@@ -76,12 +76,32 @@ const ActivityPage = () => {
                 {activity.images.map((imgUrl, index) => (
                   <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-md">
                     <img 
-                       src={imgUrl} 
+                       src={imgUrl.startsWith('http') 
+                            ? imgUrl // Use directly if it's an external URL
+                            : `${import.meta.env.BASE_URL}${imgUrl}` // Prepend base URL for local images
+                       } 
                        alt={`${activity.title} - Image ${index + 1}`} 
                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Video Player */}
+          {activity.videoUrl && (
+            <div className="mb-12">
+              <h2 className="text-2xl font-semibold mb-6">Video</h2>
+              <div className="aspect-video overflow-hidden rounded-lg shadow-md bg-black">
+                <video 
+                   controls 
+                   className="w-full h-full"
+                   src={`${import.meta.env.BASE_URL}${activity.videoUrl}`}
+                   aria-label={`${activity.title} - Video`}
+                >
+                  Your browser does not support the video tag.
+                </video>
               </div>
             </div>
           )}
