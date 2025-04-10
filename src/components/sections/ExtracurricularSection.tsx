@@ -114,7 +114,7 @@ const ExtracurricularSection: React.FC<ExtracurricularSectionProps> = ({ isSumma
                     style={{
                       backgroundImage: activity.imageUrl.startsWith('http') 
                         ? `url(${activity.imageUrl}?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600)`
-                        : `url(${import.meta.env.BASE_URL}${activity.imageUrl})`
+                        : `url(${activity.imageUrl})`
                     }}
                   ></div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-70"></div>

@@ -78,7 +78,7 @@ const ActivityPage = () => {
                     <img 
                        src={imgUrl.startsWith('http') 
                             ? imgUrl // Use directly if it's an external URL
-                            : `${import.meta.env.BASE_URL}${imgUrl}` // Prepend base URL for local images
+                            : `${imgUrl}` // Use local URL directly
                        } 
                        alt={`${activity.title} - Image ${index + 1}`} 
                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
@@ -97,7 +97,7 @@ const ActivityPage = () => {
                 <video 
                    controls 
                    className="w-full h-full"
-                   src={`${import.meta.env.BASE_URL}${activity.videoUrl}`}
+                   src={activity.videoUrl} 
                    aria-label={`${activity.title} - Video`}
                 >
                   Your browser does not support the video tag.
