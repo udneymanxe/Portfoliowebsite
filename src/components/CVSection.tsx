@@ -6,6 +6,7 @@ import {
   CalendarCheck, Users, Linkedin, Github, Youtube, Mail, Phone, MapPin
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { activities } from './sections/ExtracurricularSection';
 
 interface CVSectionProps {
   isSummary?: boolean;
@@ -222,14 +223,25 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
             </div>
             <h3 className="text-xl font-bold">Extracurricular Activities</h3>
           </div>
-          <div className="ml-14 space-y-4">
-            <div className="cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out delay-100">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
-                <p className="font-medium">Rural Immersion Camp Volunteer</p>
-                <span className="text-muted-foreground text-sm mt-1 sm:mt-0">2022 & 2023</span>
+          <div className="ml-14 space-y-6">
+            {activities.map((activity, index) => (
+              <div 
+                key={activity.id} 
+                className={`cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out`} 
+                style={{ transitionDelay: `${100 + index * 50}ms` }}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
+                  <Link 
+                    to={`/extracurricular/${activity.id}`}
+                    className="font-medium hover:text-primary transition-colors duration-200"
+                  >
+                    {activity.title}
+                  </Link>
+                  <span className="text-muted-foreground text-sm mt-1 sm:mt-0 flex-shrink-0 pl-2">{activity.date}</span>
+                </div>
+                <p className="text-muted-foreground text-sm">{activity.description}</p>
               </div>
-              <p className="text-muted-foreground text-sm">Volunteered in Makwanpur and Lamjung districts, informing students on STEM education and careers.</p>
-            </div>
+            ))}
           </div>
         </div>
 
