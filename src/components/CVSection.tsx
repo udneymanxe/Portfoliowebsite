@@ -189,8 +189,8 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
           </div>
         </div>
         
-        {/* Combined Experience Section */}
-        <div className="mb-12">
+        {/* Combined Experience Section - Added ID */}
+        <div id="experience" className="mb-12">
           <div className="flex items-center mb-6">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
               {/* Using Briefcase icon for general Experience */}
@@ -240,7 +240,8 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
           </div>
         </div>
         
-        <div className="mb-12">
+        {/* Skills Section - Added ID */}
+        <div id="skills" className="mb-12">
           <div className="flex items-center mb-6">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
               <Code className="text-primary h-5 w-5" />

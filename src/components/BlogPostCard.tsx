@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Calendar } from 'lucide-react';
 
 interface BlogPost {
-  id: number;
+  id: string;
   title: string;
   excerpt: string;
   date: string;
@@ -48,8 +48,9 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post, index, isSummaryView 
   return (
     <div 
       ref={cardRef} 
-      className={`group glass rounded-2xl overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-2 opacity-0 -translate-y-4 transition-all duration-700 ease-out`}
-      style={{ transitionDelay: `${index * 100 + 100}ms` }}
+      className={`group glass rounded-2xl overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-2 
+                 ${!isSummaryView ? 'opacity-0 -translate-y-4 transition-all duration-700 ease-out' : ''}`}
+      style={!isSummaryView ? { transitionDelay: `${index * 100 + 100}ms` } : {}}
     >
       <div className="relative h-48 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>

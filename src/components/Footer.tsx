@@ -1,7 +1,23 @@
 import React from 'react';
 import { Linkedin, Mail, Phone, Github, Youtube, Network } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
+
+  // Helper function to get the correct path for quick links
+  const getQuickLinkPath = (item: string): string => {
+    const lowerItem = item.toLowerCase();
+    switch (lowerItem) {
+      case 'home': return '/';
+      case 'about': return '/about';
+      case 'research': return '/cv#experience'; // Link to Experience section ID
+      case 'skills': return '/cv#skills'; // Link to Skills section ID
+      case 'publications': return '/cv#experience'; // Link to Experience section ID (contains research)
+      case 'contact': return '/contact';
+      default: return '/'; // Default fallback to home
+    }
+  };
+
   return (
     <footer className="border-t border-border py-12 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -80,12 +96,12 @@ const Footer = () => {
           <ul className="space-y-2">
             {['Home', 'About', 'Research', 'Skills', 'Publications', 'Contact'].map((item) => (
               <li key={item}>
-                <a 
-                  href={item === 'Home' ? '#' : `#${item.toLowerCase()}`}
+                <Link 
+                  to={getQuickLinkPath(item)}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

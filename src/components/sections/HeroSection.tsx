@@ -3,6 +3,7 @@ import { ArrowDown, ArrowRight } from 'lucide-react';
 import useParallax from '@/hooks/useParallax';
 import ParticleHero from '@/components/ParticleHero';
 import { gsap } from 'gsap';
+import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -67,16 +68,16 @@ const HeroSection: React.FC = () => {
           Mahesh Kumar Neupane
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-          Medical physics aspirant and AI enthusiast
+          Physics AI and Tech Enthusiast
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <a href="#about" className="btn-primary">
             Discover More
             <ArrowRight className="ml-2 h-4 w-4" />
           </a>
-          <a href="#contact" className="btn-secondary">
+          <Link to="/contact" className="btn-secondary">
             Contact Me
-          </a>
+          </Link>
         </div>
       </div>
       

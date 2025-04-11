@@ -5,33 +5,10 @@ import BlogPostCard from './BlogPostCard';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
-// Sample blog post data
-const blogPosts = [
-  {
-    id: 1,
-    title: 'Advances in Proton Therapy Treatment Planning',
-    excerpt: 'Exploring recent innovations in treatment planning systems for proton therapy that improve dose accuracy and reduce computational time.',
-    date: 'June 15, 2023',
-    category: 'Radiation Therapy',
-    image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1080&q=80',
-  },
-  {
-    id: 2,
-    title: 'The Future of AI in Medical Image Analysis',
-    excerpt: 'How artificial intelligence is transforming diagnostic radiology and creating new opportunities for precision medicine.',
-    date: 'May 2, 2023',
-    category: 'Medical Imaging',
-    image: 'https://images.unsplash.com/photo-1585380291499-2198dd047b0b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1080&q=80',
-  },
-  {
-    id: 3,
-    title: 'Reflections on My First Year in Medical Physics Research',
-    excerpt: 'Personal thoughts on the challenges and rewards of beginning a career in medical physics research, with insights for new graduate students.',
-    date: 'March 18, 2023',
-    category: 'Personal',
-    image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1080&q=80',
-  }
-];
+// Import blog post data from the new data file
+import { blogPosts } from '@/data/blogPosts';
+
+// Sample blog post data - REMOVED
 
 // Define props interface
 interface BlogSectionProps {
@@ -40,8 +17,10 @@ interface BlogSectionProps {
 
 const BlogSection: React.FC<BlogSectionProps> = ({ isSummary = false }) => {
   
-  // Optionally show fewer posts in summary mode, e.g., the first one
-  const postsToShow = isSummary ? blogPosts.slice(0, 1) : blogPosts;
+  // Show the latest post in summary mode, or all posts otherwise
+  const postsToShow = isSummary 
+    ? [...blogPosts].reverse().slice(0, 1) // Reverse a copy, then take the first (latest)
+    : blogPosts;
 
   return (
     <section id="blog" className={`section ${isSummary ? 'py-16 bg-secondary/30' : ''}`}>
