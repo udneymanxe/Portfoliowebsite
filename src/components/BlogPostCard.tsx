@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface BlogPost {
   id: string;
@@ -77,11 +78,11 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post, index, isSummaryView 
         </div>
       </div>
       
-      <a 
-        href={`/blog/${post.id}`} 
+      <Link 
+        to={`/blog/${post.id}`} 
         className="absolute inset-0 z-20" 
         aria-label={`Read more about ${post.title}`}
-      ></a>
+      />
     </div>
   );
 };
