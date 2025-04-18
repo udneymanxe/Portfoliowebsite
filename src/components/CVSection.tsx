@@ -55,14 +55,17 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
       </Button>
       <Button 
         variant="secondary" 
-        onClick={(e) => {
-          e.preventDefault();
-          alert('CV download functionality will be implemented here');
-        }}
-       >
-         <Download className="mr-2 h-4 w-4" />
-         Download CV
-       </Button>
+        asChild
+      >
+        <a 
+          href="/CV_MaheshKNeupane_Updated.pdf" 
+          download="CV_MaheshKNeupane_Updated.pdf"
+          aria-label="Download CV"
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Download CV
+        </a>
+      </Button>
     </div>
   );
 
@@ -96,13 +99,16 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
           
           <Button 
             variant="secondary" 
-            onClick={(e) => {
-              e.preventDefault();
-              alert('CV download functionality will be implemented here');
-            }}
+            asChild
           >
-            <Download className="mr-2 h-4 w-4" />
-            Download Full CV
+            <a 
+              href="/CV_MaheshKNeupane_Updated.pdf" 
+              download="CV_MaheshKNeupane_Updated.pdf"
+              aria-label="Download Full CV"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download Full CV
+            </a>
           </Button>
         </div>
         
@@ -160,9 +166,9 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
                   <div>
                     <h6 className="font-medium text-sm text-primary mb-1">Computer Science & Computational Methods:</h6>
                     <ul className="list-disc list-inside text-muted-foreground text-sm space-y-1">
-                      <li>C-Programming</li>
-                      <li>Computational Course</li>
-                      <li>Numerical Methods</li>
+                  <li>C-Programming</li>
+                  <li>Computational Course</li>
+                  <li>Numerical Methods</li>
                     </ul>
                   </div>
 
@@ -171,7 +177,7 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
                     <ul className="list-disc list-inside text-muted-foreground text-sm space-y-1">
                       <li>Machine Learning (Coursera)</li>
                       <li>Deep Learning (Coursera)</li>
-                    </ul>
+                </ul>
                   </div>
                 </div>
               </div>
@@ -194,7 +200,7 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
           <div className="flex items-center mb-6">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
               {/* Using Briefcase icon for general Experience */}
-              <Briefcase className="text-primary h-5 w-5" /> 
+              <Briefcase className="text-primary h-5 w-5" />
             </div>
             {/* Changed title to Experience */}
             <h3 className="text-xl font-bold">Experience</h3>
@@ -308,7 +314,7 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
                 className={`cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out`} 
                 style={{ transitionDelay: `${100 + index * 50}ms` }}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
                   <Link 
                     to={`/extracurricular/${activity.id}`}
                     className="font-medium hover:text-primary transition-colors duration-200"
