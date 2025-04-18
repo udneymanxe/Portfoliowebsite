@@ -341,4 +341,5 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
   );
 };
 
+// End of CVSection component
 export default CVSection;
