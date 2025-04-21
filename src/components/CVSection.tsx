@@ -5,7 +5,8 @@ import {
   File, Download, Award, BookOpen, Code, Briefcase, ArrowRight, 
   CalendarCheck, Users, Linkedin, Github, Youtube, Mail, Phone, MapPin, Globe, Film,
   Network,
-  FlaskConical
+  FlaskConical,
+  ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { activities } from '@/data/activities';
@@ -204,23 +205,24 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
             <h3 className="text-xl font-bold">Certifications</h3>
           </div>
           <div className="ml-14 space-y-8">
-            {/* Machine Learning Certificate Entry */}
-            <div className="cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out delay-100">
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+            {/* Machine Learning Certificate Entry - Styled as a card */}
+            <div className="cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out delay-100 p-4 border rounded-lg shadow-sm bg-card">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
                 <h4 className="font-bold">Supervised Machine Learning: Regression and Classification</h4>
-                <span className="text-muted-foreground text-sm">April 21, 2025</span>
+                <span className="text-muted-foreground text-sm mt-1 sm:mt-0 flex-shrink-0 pl-0 sm:pl-2">April 21, 2025</span>
               </div>
               <p className="text-primary font-medium mb-3">DeepLearning.AI / Stanford University (via Coursera)</p>
               
               {/* Links for Verification and PDF Download */}
-              <div className="flex items-center space-x-4 mt-2">
+              <div className="flex items-center space-x-4 mt-3">
                 <a 
                   href="https://www.coursera.org/account/accomplishments/verify/K73UH3G7AUF1"
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-primary hover:underline inline-flex items-center"
+                  aria-label="Verify Certificate on Coursera"
                 >
-                  <Link className="mr-1.5 h-4 w-4" /> Verify Certificate
+                  <ExternalLink className="mr-1.5 h-4 w-4" /> Verify Certificate
                 </a>
                 <a 
                   href="/ML1.pdf" 

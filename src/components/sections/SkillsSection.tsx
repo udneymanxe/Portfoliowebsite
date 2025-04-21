@@ -1,6 +1,6 @@
 import React from 'react';
 import SectionTitle from '@/components/SectionTitle';
-import { Shield, Brain, Microscope, Code, Database, LineChart, FileText, Link as LinkIcon, Upload, Users } from 'lucide-react';
+import { Shield, Brain, Microscope, Code, Database, LineChart, FileText, Link as LinkIcon, Upload, Users, Download, Award, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -32,11 +32,12 @@ const SkillsSection: React.FC = () => {
   const certifications = [
     {
       id: 1, 
-      name: "Machine Learning Specialization", 
-      issuer: "DeepLearning.AI / Stanford Online (Coursera)", 
-      date: "Date TBD", // <-- Update this if you know the date
-      link: null, 
-      fileUrl: null // No file provided
+      name: "Supervised Machine Learning: Regression and Classification", 
+      issuer: "DeepLearning.AI / Stanford University (via Coursera)", 
+      date: "April 21, 2025",
+      link: "https://www.coursera.org/account/accomplishments/verify/K73UH3G7AUF1", 
+      fileUrl: "/ML1.pdf", // Path to the PDF in public folder
+      pdfDownloadName: "ML_Certificate_MaheshKNeupane.pdf" // Suggested download name
     },
     // Add more certifications here as provided
   ];
@@ -84,41 +85,50 @@ const SkillsSection: React.FC = () => {
       <div className="glass p-8 rounded-xl mt-16">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold">Certifications</h3>
-          <Button variant="outline" size="sm" disabled>
-            <Upload className="mr-2 h-4 w-4" /> Upload Certificate
-          </Button>
         </div>
         
         {certifications.length > 0 ? (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {certifications.map((cert) => (
-              <div key={cert.id} className="border p-4 rounded-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex-grow">
-                  {/* Make name a link if cert.link exists */}
-                  {cert.link ? (
-                    <a href={cert.link} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                      <h4 className="font-semibold">{cert.name}</h4>
-                    </a>
-                  ) : (
-                    <h4 className="font-semibold">{cert.name}</h4>
-                  )}
-                  <p className="text-sm text-muted-foreground">{cert.issuer} - <span className="text-xs"><Badge variant="secondary">{cert.date}</Badge></span></p>
+              // Postcard Style Div
+              <div key={cert.id} className="border p-4 rounded-lg shadow-sm bg-card flex items-start space-x-4 hover:shadow-md transition-shadow duration-200">
+                {/* Image as "Picture" */}
+                <div className="w-24 h-auto flex-shrink-0 mt-1">
+                  <img 
+                    src="/ML1.jpeg"
+                    alt={`${cert.name} Certificate Thumbnail`} 
+                    className="rounded-md object-cover"
+                  />
                 </div>
-                <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0">
-                  {cert.link && (
-                    <Button variant="ghost" size="icon" asChild>
-                      <a href={cert.link} target="_blank" rel="noopener noreferrer" aria-label="Verification Link">
-                        <LinkIcon className="h-4 w-4" />
+                {/* Certificate Details */}
+                <div className="flex-grow">
+                  <h4 className="font-semibold mb-1">{cert.name}</h4>
+                  <p className="text-sm text-muted-foreground mb-2">{cert.issuer}</p>
+                  <p className="text-xs text-muted-foreground mb-3"><Badge variant="secondary">{cert.date}</Badge></p>
+                  {/* Links */}
+                  <div className="flex items-center space-x-3 mt-2">
+                    {cert.link && (
+                      <a 
+                        href={cert.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-xs text-primary hover:underline inline-flex items-center"
+                        aria-label={`Verify ${cert.name} certificate`}
+                       >
+                        <ExternalLink className="mr-1 h-3 w-3" /> Verify
                       </a>
-                    </Button>
-                  )}
-                  {cert.fileUrl && (
-                    <Button variant="ghost" size="icon" asChild>
-                      <a href={cert.fileUrl} target="_blank" rel="noopener noreferrer" aria-label="View Certificate File">
-                        <FileText className="h-4 w-4" />
+                    )}
+                    {cert.fileUrl && (
+                      <a 
+                        href={cert.fileUrl} 
+                        download={cert.pdfDownloadName} 
+                        className="text-xs text-primary hover:underline inline-flex items-center"
+                        aria-label={`Download ${cert.name} certificate PDF`}
+                       >
+                        <Download className="mr-1 h-3 w-3" /> Download PDF
                       </a>
-                    </Button>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
