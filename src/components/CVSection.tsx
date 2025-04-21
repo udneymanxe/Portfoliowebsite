@@ -195,6 +195,47 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
           </div>
         </div>
         
+        {/* Certifications Section - Added */}
+        <div id="certifications" className="mb-12">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+              <Award className="text-primary h-5 w-5" /> {/* Using Award icon */}
+            </div>
+            <h3 className="text-xl font-bold">Certifications</h3>
+          </div>
+          <div className="ml-14 space-y-8">
+            {/* Machine Learning Certificate Entry */}
+            <div className="cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out delay-100">
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                <h4 className="font-bold">Supervised Machine Learning: Regression and Classification</h4>
+                <span className="text-muted-foreground text-sm">April 21, 2025</span>
+              </div>
+              <p className="text-primary font-medium mb-3">DeepLearning.AI / Stanford University (via Coursera)</p>
+              
+              {/* Links for Verification and PDF Download */}
+              <div className="flex items-center space-x-4 mt-2">
+                <a 
+                  href="https://www.coursera.org/account/accomplishments/verify/K73UH3G7AUF1"
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:underline inline-flex items-center"
+                >
+                  <Link className="mr-1.5 h-4 w-4" /> Verify Certificate
+                </a>
+                <a 
+                  href="/ML1.pdf" 
+                  download="ML_Certificate_MaheshKNeupane.pdf" // Suggest a descriptive filename
+                  className="text-sm text-primary hover:underline inline-flex items-center"
+                  aria-label="Download Certificate PDF"
+                 >
+                  <Download className="mr-1.5 h-4 w-4" /> Download PDF
+                </a>
+              </div>
+            </div>
+            {/* Add more certificate entries here if needed */}
+          </div>
+        </div>
+
         {/* Combined Experience Section - Added ID */}
         <div id="experience" className="mb-12">
           <div className="flex items-center mb-6">
