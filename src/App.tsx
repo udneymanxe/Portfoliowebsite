@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CustomCursor from "./components/CustomCursor";
+import ScrollToTop from "./components/ScrollToTop";
 import { setupSmoothScrolling } from "./utils/smoothScroll";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
@@ -30,6 +31,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <ScrollToTop />
           <CustomCursor />
           <Routes>
             <Route path="/" element={<Index />} />
