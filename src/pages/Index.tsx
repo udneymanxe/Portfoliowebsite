@@ -65,7 +65,7 @@ const Index = () => {
   return (
     <div className="relative min-h-screen bg-background animate-fade-in">
       <Navbar />
-      <GlowingBalls />
+      {/* <GlowingBalls /> Removed from homepage, HeroSection has its own particle effect */}
       
       <HeroSection />
       {/* Summary Sections */}

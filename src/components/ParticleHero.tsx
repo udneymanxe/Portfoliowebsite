@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 
 interface ParticleHeroProps {
@@ -67,6 +66,12 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
       
       // Calculate distance and apply mouse force
       update() {
+        // --- Add subtle constant jitter ---
+        const JITTER_STRENGTH = 0.015; // Adjust this value for more/less faint motion
+        this.vx += (Math.random() - 0.5) * JITTER_STRENGTH;
+        this.vy += (Math.random() - 0.5) * JITTER_STRENGTH;
+        // --- End Jitter ---
+
         // --- Mouse Interaction Physics ---
         if (mouse.x !== null && mouse.y !== null) {
           let dx = mouse.x - this.x;
