@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 
 const GlowingBalls: React.FC = () => {
@@ -24,7 +23,7 @@ const GlowingBalls: React.FC = () => {
     
     const initParticles = () => {
       particles = [];
-      const particleCount = Math.min(70, Math.floor(window.innerWidth / 20));
+      const particleCount = Math.min(80, Math.floor(window.innerWidth / 18));
       
       for (let i = 0; i < particleCount; i++) {
         particles.push({
@@ -33,7 +32,7 @@ const GlowingBalls: React.FC = () => {
           size: Math.random() * 2 + 0.5,
           speedX: (Math.random() - 0.5) * 0.3,
           speedY: (Math.random() - 0.5) * 0.3,
-          opacity: 0.3 + Math.random() * 0.3
+          opacity: 0.4 + Math.random() * 0.3
         });
       }
     };
@@ -51,13 +50,13 @@ const GlowingBalls: React.FC = () => {
         const dy = mouseY - p1.y;
         const mouseDist = Math.sqrt(dx * dx + dy * dy);
         
-        if (mouseDist < 150) {
+        if (mouseDist < 170) {
           ctx.beginPath();
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(mouseX, mouseY);
-          const opacity = 0.7 - (mouseDist / 150);
+          const opacity = 0.8 - (mouseDist / 170);
           ctx.strokeStyle = `rgba(245, 209, 69, ${opacity})`;
-          ctx.lineWidth = 0.4;
+          ctx.lineWidth = 0.5;
           ctx.stroke();
         }
         
@@ -69,13 +68,13 @@ const GlowingBalls: React.FC = () => {
             Math.pow(p1.y - p2.y, 2)
           );
           
-          if (dist < 120) {
+          if (dist < 140) {
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            const opacity = 0.2 - (dist / 120) * 0.2;
+            const opacity = 0.3 - (dist / 140) * 0.3;
             ctx.strokeStyle = `rgba(245, 209, 69, ${opacity})`;
-            ctx.lineWidth = 0.2;
+            ctx.lineWidth = 0.3;
             ctx.stroke();
           }
         }

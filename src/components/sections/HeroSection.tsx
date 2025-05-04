@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 const HeroSection: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const { style } = useParallax(heroRef, { speed: 0.3 });
+  const name = "Mahesh Kumar Neupane";
   
   useEffect(() => {
     gsap.fromTo('.hero-content', 
@@ -23,6 +24,21 @@ const HeroSection: React.FC = () => {
         ease: "power3.out"
       }
     );
+
+    // 3D Character Stagger Animation
+    gsap.from(".name-char-3d", {
+      opacity: 0,
+      rotateX: -90,       // Start flipped down
+      y: -50,             // Start slightly offset
+      z: -100,            // Start further back (requires perspective)
+      duration: 1.5,       // Duration for each character
+      ease: "power3.out",
+      stagger: {
+        each: 0.05,       // Delay between characters
+        from: "center"     // Animate from the center outwards
+      },
+      delay: 0.6          // Overall delay
+    });
 
     // Add stagger effect to text elements
     gsap.fromTo('.hero-content h1',
@@ -64,8 +80,19 @@ const HeroSection: React.FC = () => {
       <ParticleHero />
       
       <div className="relative z-10 max-w-4xl mx-auto hero-content opacity-0 translate-y-8">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8">
-          Mahesh Kumar Neupane
+        <h1 
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8"
+          style={{ perspective: '800px' }} // Add perspective for 3D effect
+        >
+          {name.split("").map((char, index) => (
+            <span 
+              key={index} 
+              className="name-char-3d inline-block" 
+              style={{ whiteSpace: 'pre', transformStyle: 'preserve-3d' }} // preserve-3d for children transforms
+            >
+              {char}
+            </span>
+          ))}
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
           Physics AI and Tech Enthusiast
