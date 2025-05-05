@@ -16,6 +16,9 @@ import CVPage from "./pages/CVPage";
 import ExtracurricularPage from "./pages/ExtracurricularPage";
 import ContactPage from "./pages/ContactPage";
 import ActivityPage from "./pages/ActivityPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ResearchPage from "./pages/ResearchPage";
+import CertificationsPage from "./pages/CertificationsPage";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,9 @@ const App = () => {
             <Route path="/extracurricular" element={<ExtracurricularPage />} />
             <Route path="/extracurricular/:id" element={<ActivityPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/research" element={<ResearchPage />} />
+            <Route path="/certifications" element={<CertificationsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

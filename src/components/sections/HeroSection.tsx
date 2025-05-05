@@ -8,7 +8,8 @@ import { Link } from 'react-router-dom';
 const HeroSection: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const { style } = useParallax(heroRef, { speed: 0.3 });
-  const name = "Mahesh Kumar Neupane";
+  const firstName = "Mahesh Kumar ";
+  const lastName = "Neupane";
   
   useEffect(() => {
     gsap.fromTo('.hero-content', 
@@ -84,15 +85,26 @@ const HeroSection: React.FC = () => {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8"
           style={{ perspective: '800px' }} // Add perspective for 3D effect
         >
-          {name.split("").map((char, index) => (
+          {firstName.split("").map((char, index) => (
             <span 
-              key={index} 
+              key={`first-${index}`} 
               className="name-char-3d inline-block" 
-              style={{ whiteSpace: 'pre', transformStyle: 'preserve-3d' }} // preserve-3d for children transforms
+              style={{ whiteSpace: 'pre', transformStyle: 'preserve-3d' }}
             >
               {char}
             </span>
           ))}
+          <span className="whitespace-nowrap">
+            {lastName.split("").map((char, index) => (
+              <span 
+                key={`last-${index}`} 
+                className="name-char-3d inline-block" 
+                style={{ whiteSpace: 'pre', transformStyle: 'preserve-3d' }}
+              >
+                {char}
+              </span>
+            ))}
+          </span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
           Physics AI and Tech Enthusiast

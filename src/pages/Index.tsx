@@ -14,6 +14,9 @@ import AboutSection from '@/components/sections/AboutSection';
 import CVSection from '@/components/CVSection';
 import BlogSection from '@/components/BlogSection';
 import ExtracurricularSection from '@/components/sections/ExtracurricularSection';
+// Import new summary sections
+import ProjectsSummarySection from '@/components/sections/ProjectsSummarySection';
+import ResearchSummarySection from '@/components/sections/ResearchSummarySection';
 // Contact section is usually not summarized on the main page, keeping it separate.
 
 // Import animation utilities
@@ -72,7 +75,8 @@ const Index = () => {
       <AboutSection isSummary={true} />
       <SkillsSection /> { /* Keep full skills section */}
       <CVSection isSummary={true} />
-      <PublicationsSection /> { /* Keep full publications section */}
+      <ProjectsSummarySection /> {/* Add Projects Summary */}
+      <ResearchSummarySection /> {/* Add Research Summary */}
       <BlogSection isSummary={true} />
       <ExtracurricularSection isSummary={true} />
       {/* Contact section remains on its dedicated page /contact */}
