@@ -211,6 +211,11 @@
     /* Smooth resizing */
     transition: width 0.1s ease, height 0.1s ease; /* Add slight transition for layout changes */
   }
+  
+  /* Radial Gradient Utility */
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
 }
 
 /* Particle Animation */

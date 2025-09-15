@@ -106,6 +106,66 @@ export default {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' }
 				},
+				'spin-medium': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(-360deg)' }
+				},
+				'spin-fast': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
+				},
+				'spin-ultra-slow': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(-360deg)' }
+				},
+				'spin-ultra-fast': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(720deg)' }
+				},
+				'spin-hyper-slow': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(-360deg)' }
+				},
+				'spin-hyper-fast': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(1080deg)' }
+				},
+				'spin-mega-slow': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
+				},
+				'spin-slow-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
+				},
+				'spin-medium-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(-360deg)' }
+				},
+				'spin-fast-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
+				},
+				'spin-ultra-slow-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(-360deg)' }
+				},
+				'spin-ultra-fast-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(720deg)' }
+				},
+				'spin-hyper-slow-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(-360deg)' }
+				},
+				'spin-hyper-fast-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(1080deg)' }
+				},
+				'spin-mega-slow-hover': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
+				},
 				'text-reveal': {
 					'0%': { transform: 'translateY(100%)', opacity: '0' },
 					'100%': { transform: 'translateY(0)', opacity: '1' }
@@ -136,7 +196,22 @@ export default {
 				'scale-in': 'scale-in 0.6s ease-out',
 				'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
-				'spin-slow': 'spin-slow 15s linear infinite',
+				'spin-slow': 'spin-slow 120s linear infinite',
+				'spin-medium': 'spin-medium 100s linear infinite',
+				'spin-fast': 'spin-fast 80s linear infinite',
+				'spin-ultra-slow': 'spin-ultra-slow 200s linear infinite',
+				'spin-ultra-fast': 'spin-ultra-fast 60s linear infinite',
+				'spin-hyper-slow': 'spin-hyper-slow 300s linear infinite',
+				'spin-hyper-fast': 'spin-hyper-fast 40s linear infinite',
+				'spin-mega-slow': 'spin-mega-slow 400s linear infinite',
+				'spin-slow-hover': 'spin-slow-hover 15s linear infinite',
+				'spin-medium-hover': 'spin-medium-hover 8s linear infinite',
+				'spin-fast-hover': 'spin-fast-hover 5s linear infinite',
+				'spin-ultra-slow-hover': 'spin-ultra-slow-hover 25s linear infinite',
+				'spin-ultra-fast-hover': 'spin-ultra-fast-hover 3s linear infinite',
+				'spin-hyper-slow-hover': 'spin-hyper-slow-hover 40s linear infinite',
+				'spin-hyper-fast-hover': 'spin-hyper-fast-hover 1.5s linear infinite',
+				'spin-mega-slow-hover': 'spin-mega-slow-hover 60s linear infinite',
 				'text-reveal': 'text-reveal 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards',
 				'slide-up': 'slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
 				'slide-down': 'slide-down 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
