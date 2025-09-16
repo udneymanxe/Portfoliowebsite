@@ -211,117 +211,131 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
               <div className="lg:col-span-4 flex justify-center lg:justify-start">
                 <div className="relative group">
                   {/* Buddhist Mandala System Container */}
-                  <div className="relative w-80 h-80 lg:w-96 lg:h-96 group/mandala transition-all duration-1000">
+                  <div className="relative w-72 h-72 lg:w-80 lg:h-80 group/mandala transition-all duration-1000">
                     
-                    {/* Outer Ring - Simple Sacred Circle */}
-                    <div className="absolute -inset-4 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-15 transition-all duration-1000">
-                      {/* Simple Sacred Dots - 8 directions */}
-                      {[...Array(8)].map((_, i) => (
+                    {/* Outer Ring - More detailed with smaller circles */}
+                    <div className="absolute -inset-4 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
+                      {[...Array(16)].map((_, i) => (
                         <div
                           key={`outer-dot-${i}`}
-                          className="absolute w-1.5 h-1.5 bg-primary/40 rounded-full"
+                          className="absolute w-1 h-1 bg-primary/50 rounded-full"
                           style={{
-                            top: `${50 + Math.sin(i * Math.PI / 4) * 47}%`,
-                            left: `${50 + Math.cos(i * Math.PI / 4) * 47}%`,
+                            top: `${50 + Math.sin(i * Math.PI / 8) * 48}%`,
+                            left: `${50 + Math.cos(i * Math.PI / 8) * 48}%`,
                             transform: 'translate(-50%, -50%)'
                           }}
                         ></div>
                       ))}
                     </div>
                     
-                    {/* Second Ring - Clean Geometric */}
-                    <div className="absolute -inset-2 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-20 transition-all duration-1000">
-                      {/* Simple Squares - 4 directions */}
-                      {[...Array(4)].map((_, i) => (
+                    {/* Second Ring - Intricate boxes */}
+                    <div className="absolute -inset-2 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-30 transition-all duration-1000">
+                      {[...Array(8)].map((_, i) => (
                         <div
                           key={`square-${i}`}
-                          className="absolute w-3 h-3 border border-primary/50 rounded-sm"
+                          className="absolute w-2.5 h-2.5 border border-primary/60 rounded-sm"
                           style={{
-                            top: `${50 + Math.sin(i * Math.PI / 2) * 45}%`,
-                            left: `${50 + Math.cos(i * Math.PI / 2) * 45}%`,
+                            top: `${50 + Math.sin(i * Math.PI / 4) * 46}%`,
+                            left: `${50 + Math.cos(i * Math.PI / 4) * 46}%`,
                             transform: `translate(-50%, -50%) rotate(${i * 45}deg)`
                           }}
                         ></div>
                       ))}
                     </div>
                     
-                    
-                    {/* Third Ring - Main Sacred Circle */}
-                    <div className="absolute inset-0 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
-                      {/* Simple Sacred Circle */}
-                      <div className="absolute inset-0 rounded-full border border-primary/30"></div>
+                    {/* Third Ring - Main Sacred Circle with pattern */}
+                    <div className="absolute inset-0 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-35 transition-all duration-1000">
+                      <div className="absolute inset-0 rounded-full border border-primary/40"></div>
+                      {[...Array(12)].map((_, i) => (
+                        <div
+                          key={`main-circle-pattern-${i}`}
+                          className="absolute w-0.5 h-2 bg-primary/40"
+                          style={{
+                            top: '50%',
+                            left: '50%',
+                            transform: `translate(-50%, -50%) rotate(${i * 30}deg) translateY(-48px)`
+                          }}
+                        ></div>
+                      ))}
                     </div>
 
-                    {/* Fourth Ring - Inner Sacred Elements */}
-                    <div className="absolute inset-8 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-30 transition-all duration-1000">
-                      {/* Simple Sacred Dots - 6 directions */}
-                      {[...Array(6)].map((_, i) => (
+                    {/* Fourth Ring - Inner smaller circles */}
+                    <div className="absolute inset-8 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-40 transition-all duration-1000">
+                      {[...Array(12)].map((_, i) => (
                         <div
                           key={`inner-dot-${i}`}
-                          className="absolute w-2 h-2 bg-primary/50 rounded-full"
+                          className="absolute w-1.5 h-1.5 bg-primary/60 rounded-full"
                           style={{
-                            top: `${50 + Math.sin(i * Math.PI / 3) * 40}%`,
-                            left: `${50 + Math.cos(i * Math.PI / 3) * 40}%`,
+                            top: `${50 + Math.sin(i * Math.PI / 6) * 42}%`,
+                            left: `${50 + Math.cos(i * Math.PI / 6) * 42}%`,
                             transform: 'translate(-50%, -50%)'
                           }}
                         ></div>
                       ))}
                     </div>
 
-                    {/* Fifth Ring - Simple Inner Circle */}
-                    <div className="absolute inset-12 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-20 transition-all duration-1000">
-                      {/* Simple Inner Circle */}
-                      <div className="absolute inset-0 rounded-full border border-primary/40"></div>
+                    {/* Fifth Ring - Another layer of boxes */}
+                    <div className="absolute inset-12 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-30 transition-all duration-1000">
+                      {[...Array(6)].map((_, i) => (
+                        <div
+                          key={`inner-square-${i}`}
+                          className="absolute w-2 h-2 border border-primary/50 rounded-sm"
+                          style={{
+                            top: `${50 + Math.sin(i * Math.PI / 3) * 38}%`,
+                            left: `${50 + Math.cos(i * Math.PI / 3) * 38}%`,
+                            transform: `translate(-50%, -50%) rotate(${i * 60}deg)`
+                          }}
+                        ></div>
+                      ))}
                     </div>
 
-                    {/* Primary Sacred Square */}
-                    <div className="absolute inset-16 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-30 transition-all duration-1000">
-                      <div className="w-full h-full border-2 border-primary/60 rounded-lg transform rotate-45"></div>
+                    {/* Primary Sacred Square - Rotated */}
+                    <div className="absolute inset-16 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-40 transition-all duration-1000">
+                      <div className="w-full h-full border-2 border-primary/70 rounded-lg transform rotate-45"></div>
                     </div>
 
-                    {/* Additional Box Layer 1 - Large Outer */}
-                    <div className="absolute inset-4 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-15 transition-all duration-1000">
-                      <div className="w-full h-full border border-primary/30 rounded-xl transform rotate-12"></div>
+                    {/* Additional Box Layer 1 - Subtle outer rotation */}
+                    <div className="absolute inset-4 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-20 transition-all duration-1000">
+                      <div className="w-full h-full border border-primary/30 rounded-xl transform rotate-15"></div>
                     </div>
 
-                    {/* Additional Box Layer 2 - Medium */}
-                    <div className="absolute inset-8 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-20 transition-all duration-1000">
-                      <div className="w-full h-full border border-primary/45 rounded-lg transform rotate-30"></div>
-                    </div>
-
-                    {/* Additional Box Layer 3 - Inner */}
-                    <div className="absolute inset-14 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
-                      <div className="w-full h-full border border-primary/55 rounded-md transform rotate-60"></div>
+                    {/* Additional Box Layer 2 - Inner rotation */}
+                    <div className="absolute inset-14 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-35 transition-all duration-1000">
+                      <div className="w-full h-full border border-primary/50 rounded-md transform rotate-60"></div>
                     </div>
                     
-                    
-                    {/* Central Sacred Core */}
-                    <div className="absolute inset-20 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
-                      {/* Simple Central Circle */}
-                      <div className="w-full h-full rounded-full border-2 border-primary/70"></div>
+                    {/* Central Sacred Core with more detail */}
+                    <div className="absolute inset-20 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-50 transition-all duration-1000">
+                      <div className="w-full h-full rounded-full border-2 border-primary/80"></div>
                       
+                      {/* Central Petal-like design */}
+                      {[...Array(4)].map((_, i) => (
+                        <div
+                          key={`central-petal-${i}`}
+                          className="absolute w-4 h-4 rounded-full border border-primary/70"
+                          style={{
+                            top: `${50 + Math.sin(i * Math.PI / 2 + Math.PI / 4) * 25}%`,
+                            left: `${50 + Math.cos(i * Math.PI / 2 + Math.PI / 4) * 25}%`,
+                            transform: 'translate(-50%, -50%)'
+                          }}
+                        ></div>
+                      ))}
+
                       {/* Central Om Symbol */}
                       <div className="absolute top-1/2 left-1/2 w-3 h-3 transform -translate-x-1/2 -translate-y-1/2">
-                        <div className="w-full h-full rounded-full bg-primary/60"></div>
+                        <div className="w-full h-full rounded-full bg-primary/70"></div>
                       </div>
                     </div>
 
-                    {/* Additional Circle Layer 1 - Ultra Slow */}
-                    <div className="absolute inset-6 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-20 transition-all duration-1000">
+                    {/* Additional Circle Layer 1 - Slow */}
+                    <div className="absolute inset-6 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
                       <div className="w-full h-full rounded-full border border-primary/40"></div>
                     </div>
 
-                    {/* Additional Circle Layer 2 - Hyper Slow */}
-                    <div className="absolute inset-10 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
+                    {/* Additional Circle Layer 2 - Slower */}
+                    <div className="absolute inset-10 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-30 transition-all duration-1000">
                       <div className="w-full h-full rounded-full border border-primary/50"></div>
                     </div>
-
-                    {/* Additional Circle Layer 3 - Medium */}
-                    <div className="absolute inset-18 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-15 transition-all duration-1000">
-                      <div className="w-full h-full rounded-full border border-primary/35"></div>
-                    </div>
-                    
-                    
 
                     {/* Central Photo Container with Pulsing Ring */}
                     <div className="absolute inset-20 lg:inset-24 rounded-full overflow-hidden group-hover:scale-110 transition-transform duration-700">
