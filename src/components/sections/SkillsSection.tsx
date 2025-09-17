@@ -157,8 +157,8 @@ const SkillsSection: React.FC = () => {
         />
         
         {/* Modern Skills Grid */}
-        <div className="container max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mt-12 sm:mt-16">
             {skillCategories.map((category, index) => (
               <div key={index} className="group relative overflow-hidden rounded-2xl border border-primary/10 hover:border-primary/30 transition-all duration-700 hover:scale-105 hover:-translate-y-2">
                 {/* Dynamic Background */}
@@ -168,15 +168,15 @@ const SkillsSection: React.FC = () => {
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-500"></div>
                 
                 {/* Content */}
-                <div className="relative p-8 backdrop-blur-sm">
+                <div className="relative p-6 sm:p-8 backdrop-blur-sm">
                   {/* Header */}
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <category.icon className="text-primary h-7 w-7 group-hover:rotate-12 transition-transform duration-300" />
+                  <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <category.icon className="text-primary h-5 w-5 sm:h-7 sm:w-7 group-hover:rotate-12 transition-transform duration-300" />
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">{category.title}</h3>
-                      <p className="text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors duration-300">{category.description}</p>
+                    <div className="flex-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">{category.title}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors duration-300 leading-tight">{category.description}</p>
                     </div>
                   </div>
                   
@@ -199,11 +199,11 @@ const SkillsSection: React.FC = () => {
                       </div>
                     </div>
                   ) : category.title === "Soft Skills" ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       {category.skills?.map((skill, skillIndex) => (
-                        <div key={skillIndex} className="flex items-center space-x-3 p-3 rounded-lg bg-background/30 border border-primary/5 group-hover:border-primary/20 transition-colors duration-300">
-                          <div className="w-2 h-2 bg-primary rounded-full"></div>
-                          <span className="text-sm font-medium text-foreground">{skill}</span>
+                        <div key={skillIndex} className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg bg-background/30 border border-primary/5 group-hover:border-primary/20 transition-colors duration-300">
+                          <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+                          <span className="text-xs sm:text-sm font-medium text-foreground">{skill}</span>
                         </div>
                       ))}
                     </div>

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { usePerformanceMode } from '@/hooks/usePerformanceMode';
 
 interface ParticleHeroProps {
   className?: string;
@@ -7,6 +8,7 @@ interface ParticleHeroProps {
 const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { reduceParticles, reduceAnimations, isMobile } = usePerformanceMode();
   
   useEffect(() => {
     const container = containerRef.current;
@@ -17,17 +19,27 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
     if (!ctx) return;
     
     let particlesArray: Particle[] = [];
-    const particleCount = 3000; // Number of particles
+    // Optimize particle count based on performance capabilities
+    const getParticleCount = () => {
+      if (reduceParticles) {
+        return isMobile ? 300 : 800; // Very reduced for low-end devices
+      }
+      if (isMobile) {
+        return 800; // Standard mobile count
+      }
+      return 2000; // Desktop count (reduced from 3000)
+    };
+    const particleCount = getParticleCount();
     
-    // Mouse interaction settings
+    // Mouse/Touch interaction settings - optimized for performance
     const mouse = {
       x: null as number | null,
       y: null as number | null,
-      radius: 100 // Interaction radius around the mouse
+      radius: isMobile ? 60 : 100 // Reduced interaction radius for mobile
     };
     
     const interactionSettings = {
-      forceStrength: 1,      // How strongly mouse repels/attracts
+      forceStrength: reduceAnimations ? 0.5 : 1,      // Reduced force for low-end devices
       friction: 0.98,      // Slows particles down (0 to 1)
       minDistance: 30,       // Minimum distance before force maxes out
       interactionMode: 'repel' as 'repel' | 'attract' // Can be 'repel' or 'attract'
@@ -154,18 +166,37 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
       requestAnimationFrame(animate); // Loop
     }
     
-    // Update mouse coordinates
+    // Update mouse/touch coordinates
     function handleMouseMove(event: MouseEvent) {
-      if (!canvas) return;
+      if (!canvas || isMobile) return; // Disable mouse interaction on mobile
       const rect = canvas.getBoundingClientRect();
       mouse.x = event.clientX - rect.left;
       mouse.y = event.clientY - rect.top;
     }
     
+    function handleTouchMove(event: TouchEvent) {
+      if (!canvas || !isMobile) return; // Only handle touch on mobile
+      event.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = event.touches[0];
+      if (touch) {
+        mouse.x = touch.clientX - rect.left;
+        mouse.y = touch.clientY - rect.top;
+      }
+    }
+    
+    function handleTouchEnd() {
+      if (isMobile) {
+        mouse.x = null;
+        mouse.y = null;
+      }
+    }
+    
     function handleMouseOut() {
-      // Optional: Stop interaction when mouse leaves canvas
-      // mouse.x = null;
-      // mouse.y = null;
+      if (!isMobile) {
+        mouse.x = null;
+        mouse.y = null;
+      }
     }
     
     // Handle window resize
@@ -175,9 +206,15 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
       canvas.height = container.clientHeight;
     }
     
-    // Add event listeners
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseout', handleMouseOut);
+    // Add event listeners - optimized for mobile/desktop
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseout', handleMouseOut);
+    } else {
+      canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      canvas.addEventListener('touchend', handleTouchEnd);
+      canvas.addEventListener('touchcancel', handleTouchEnd);
+    }
     window.addEventListener('resize', resizeCanvas);
     
     // Start the particle system
@@ -186,11 +223,17 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
     
     // Clean up on unmount
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseout', handleMouseOut);
+      if (!isMobile) {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseout', handleMouseOut);
+      } else {
+        canvas.removeEventListener('touchmove', handleTouchMove);
+        canvas.removeEventListener('touchend', handleTouchEnd);
+        canvas.removeEventListener('touchcancel', handleTouchEnd);
+      }
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [reduceParticles, reduceAnimations, isMobile]);
   
   return (
     <div 

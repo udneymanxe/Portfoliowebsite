@@ -52,7 +52,13 @@
 @layer base {
   * {
     @apply border-border;
-    cursor: none !important;
+  }
+  
+  /* Only apply custom cursor on non-mobile devices */
+  @media (hover: hover) and (pointer: fine) {
+    * {
+      cursor: none !important;
+    }
   }
 
   html {
@@ -123,11 +129,61 @@
   }
   
   .btn-primary {
-    @apply relative flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-primary-foreground transition duration-300 ease-out border-2 border-primary rounded-md shadow-md bg-primary hover:scale-[1.02] active:scale-95 interactive;
+    @apply relative flex items-center justify-center px-4 sm:px-6 py-3 sm:py-3 overflow-hidden font-medium text-primary-foreground transition duration-300 ease-out border-2 border-primary rounded-md shadow-md bg-primary hover:scale-[1.02] active:scale-95 interactive min-h-[44px] text-sm sm:text-base;
   }
   
   .btn-secondary {
-    @apply relative flex items-center justify-center px-6 py-3 overflow-hidden font-medium transition duration-300 ease-out border-2 border-primary rounded-md text-primary bg-transparent hover:bg-primary/5 active:scale-95 interactive;
+    @apply relative flex items-center justify-center px-4 sm:px-6 py-3 sm:py-3 overflow-hidden font-medium transition duration-300 ease-out border-2 border-primary rounded-md text-primary bg-transparent hover:bg-primary/5 active:scale-95 interactive min-h-[44px] text-sm sm:text-base;
+  }
+  
+  /* Mobile-specific button improvements */
+  @media (max-width: 767px) {
+    .btn-primary, .btn-secondary {
+      @apply w-full max-w-xs mx-auto;
+    }
+  }
+  
+  /* Mobile performance optimizations */
+  @media (max-width: 767px) {
+    /* Reduce animation complexity on mobile */
+    .animate-spin-slow, .animate-spin-medium, .animate-spin-fast,
+    .animate-spin-ultra-slow, .animate-spin-ultra-fast,
+    .animate-spin-hyper-slow, .animate-spin-hyper-fast,
+    .animate-spin-mega-slow {
+      animation: none;
+    }
+    
+    /* Simplify blur effects on mobile */
+    .blur-xl { @apply blur-lg; }
+    .blur-2xl { @apply blur-lg; }
+    .blur-3xl { @apply blur-lg; }
+    
+    /* Reduce backdrop blur on mobile for performance */
+    .backdrop-blur-lg { @apply backdrop-blur-sm; }
+    .backdrop-blur-md { @apply backdrop-blur-sm; }
+    
+    /* Optimize text sizes for mobile readability */
+    .text-7xl { @apply text-4xl; }
+    .text-6xl { @apply text-3xl; }
+    .text-5xl { @apply text-2xl; }
+    
+    /* Mobile touch optimizations */
+    .interactive {
+      min-height: 44px;
+      min-width: 44px;
+      touch-action: manipulation;
+    }
+    
+    /* Improve mobile scrolling */
+    body {
+      -webkit-overflow-scrolling: touch;
+      overflow-scrolling: touch;
+    }
+    
+    /* Reduce motion for better mobile performance */
+    * {
+      will-change: auto;
+    }
   }
   
   .btn-icon {

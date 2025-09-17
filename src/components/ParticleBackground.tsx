@@ -29,9 +29,11 @@ const ParticleBackground: React.FC = () => {
       canvas.height = window.innerHeight;
     };
     
-    // Create particles
+    // Create particles - optimized for mobile
     const createParticles = () => {
-      const particleCount = Math.min(100, Math.floor(window.innerWidth / 20));
+      const isMobile = window.innerWidth < 768;
+      const baseCount = isMobile ? 30 : 100;
+      const particleCount = Math.min(baseCount, Math.floor(window.innerWidth / (isMobile ? 40 : 20)));
       
       for (let i = 0; i < particleCount; i++) {
         particles.push({

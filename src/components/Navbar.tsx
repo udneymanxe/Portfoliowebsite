@@ -74,13 +74,13 @@ const Navbar = () => {
       
       {/* Mobile navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full py-4 bg-black/90 backdrop-blur-md animate-fade-in">
-          <nav className="flex flex-col items-center gap-6 py-8">
+        <div className="md:hidden absolute top-full left-0 w-full py-4 bg-black/95 backdrop-blur-md animate-fade-in border-t border-primary/20 shadow-lg">
+          <nav className="flex flex-col items-center gap-4 py-6">
             {navItems.map((item) => (
               <Link 
                 key={item} 
                 to={getNavItemHref(item)}
-                className="text-foreground/90 hover:text-primary transition-colors duration-300 font-medium py-2 text-lg interactive"
+                className="text-foreground/90 hover:text-primary active:text-primary/80 transition-colors duration-200 font-medium py-3 px-6 text-base rounded-lg hover:bg-primary/10 active:bg-primary/20 min-w-[120px] text-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item}

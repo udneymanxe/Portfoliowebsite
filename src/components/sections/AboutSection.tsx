@@ -207,37 +207,37 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
             <div className="absolute bottom-10 left-10 w-24 h-24 bg-primary/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
             
             <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 p-8 lg:p-12">
-              {/* Photo Section - Advanced Rotating Circles Design */}
+              {/* Photo Section - Simplified for Mobile */}
               <div className="lg:col-span-4 flex justify-center lg:justify-start">
                 <div className="relative group">
-                  {/* Buddhist Mandala System Container */}
-                  <div className="relative w-72 h-72 lg:w-80 lg:h-80 group/mandala transition-all duration-1000">
+                  {/* Simplified Mandala System Container - Reduced complexity for mobile */}
+                  <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 group/mandala transition-all duration-1000">
                     
-                    {/* Outer Ring - More detailed with smaller circles */}
-                    <div className="absolute -inset-4 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
-                      {[...Array(16)].map((_, i) => (
+                    {/* Outer Ring - Simplified for mobile performance */}
+                    <div className="hidden sm:block absolute -inset-4 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-25 transition-all duration-1000">
+                      {[...Array(8)].map((_, i) => (
                         <div
                           key={`outer-dot-${i}`}
                           className="absolute w-1 h-1 bg-primary/50 rounded-full"
                           style={{
-                            top: `${50 + Math.sin(i * Math.PI / 8) * 48}%`,
-                            left: `${50 + Math.cos(i * Math.PI / 8) * 48}%`,
+                            top: `${50 + Math.sin(i * Math.PI / 4) * 48}%`,
+                            left: `${50 + Math.cos(i * Math.PI / 4) * 48}%`,
                             transform: 'translate(-50%, -50%)'
                           }}
                         ></div>
                       ))}
                     </div>
                     
-                    {/* Second Ring - Intricate boxes */}
-                    <div className="absolute -inset-2 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-30 transition-all duration-1000">
-                      {[...Array(8)].map((_, i) => (
+                    {/* Second Ring - Simplified for mobile */}
+                    <div className="hidden md:block absolute -inset-2 animate-spin-mega-slow group-hover/mandala:animate-spin-mega-slow-hover opacity-30 transition-all duration-1000">
+                      {[...Array(6)].map((_, i) => (
                         <div
                           key={`square-${i}`}
-                          className="absolute w-2.5 h-2.5 border border-primary/60 rounded-sm"
+                          className="absolute w-2 h-2 border border-primary/60 rounded-sm"
                           style={{
-                            top: `${50 + Math.sin(i * Math.PI / 4) * 46}%`,
-                            left: `${50 + Math.cos(i * Math.PI / 4) * 46}%`,
-                            transform: `translate(-50%, -50%) rotate(${i * 45}deg)`
+                            top: `${50 + Math.sin(i * Math.PI / 3) * 46}%`,
+                            left: `${50 + Math.cos(i * Math.PI / 3) * 46}%`,
+                            transform: `translate(-50%, -50%) rotate(${i * 60}deg)`
                           }}
                         ></div>
                       ))}
@@ -403,7 +403,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
           </p>
           
                 {/* Advanced Interactive Stats Cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {[
                     { label: "Physics Degree", value: "B.S.", icon: "🎓", color: "from-blue-500/10 to-primary/10" },
                     { label: "Teaching Exp.", value: "2+ Years", icon: "👨‍🏫", color: "from-green-500/10 to-primary/10" },
@@ -420,10 +420,10 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                       </div>
                       
                       {/* Content */}
-                      <div className="relative p-4 backdrop-blur-sm">
-                        <div className="text-2xl mb-2 transform group-hover:scale-110 transition-transform duration-300">{stat.icon}</div>
-                        <div className="text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">{stat.label}</div>
-                        <div className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-300">{stat.value}</div>
+                      <div className="relative p-3 sm:p-4 backdrop-blur-sm">
+                        <div className="text-xl sm:text-2xl mb-1 sm:mb-2 transform group-hover:scale-110 transition-transform duration-300">{stat.icon}</div>
+                        <div className="text-xs sm:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300 leading-tight">{stat.label}</div>
+                        <div className="text-sm sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-300">{stat.value}</div>
                       </div>
                       
                       {/* Particle Effect on Hover */}
@@ -451,7 +451,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                     <div className="h-px flex-1 bg-gradient-to-r from-primary/50 to-transparent"></div>
                   </div>
                   
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
                     {[
                       { name: "Medical Imaging", icon: "🏥", level: 90 },
                       { name: "AI in Healthcare", icon: "🤖", level: 85 },
@@ -462,7 +462,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                     ].map((tag, index) => (
                       <div 
                         key={index} 
-                        className="group relative overflow-hidden px-4 py-2 bg-gradient-to-r from-primary/5 to-primary/10 rounded-full border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-default hover:scale-105"
+                        className="group relative overflow-hidden px-3 sm:px-4 py-2 bg-gradient-to-r from-primary/5 to-primary/10 rounded-full border border-primary/20 hover:border-primary/40 transition-all duration-500 cursor-default hover:scale-105"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         {/* Background Progress Bar */}
@@ -472,9 +472,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                         ></div>
                         
                         {/* Content */}
-                        <div className="relative flex items-center space-x-2">
+                        <div className="relative flex items-center space-x-1 sm:space-x-2">
                           <span className="text-sm group-hover:animate-bounce">{tag.icon}</span>
-                          <span className="text-xs font-medium text-primary group-hover:text-primary transition-colors duration-300">
+                          <span className="text-xs sm:text-xs font-medium text-primary group-hover:text-primary transition-colors duration-300">
                             {tag.name}
                           </span>
                           
@@ -514,9 +514,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                 </div>
 
                 {/* Social Links & CTA */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 space-y-4 sm:space-y-0">
+                <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between pt-4 space-y-4 sm:space-y-0">
                   {/* Social Links */}
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-3 sm:space-x-4">
                     {[
                       { icon: Linkedin, href: "https://www.linkedin.com/in/mahesh-kumar-neupane-54a58618a/", label: "LinkedIn" },
                       { icon: Github, href: "https://github.com/udneymanxe", label: "GitHub" },
@@ -528,7 +528,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                         target="_blank" 
                         rel="noopener noreferrer" 
                         aria-label={social.label}
-                        className="group relative w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center hover:bg-primary transition-all duration-300 hover:scale-110"
+                        className="group relative w-10 h-10 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center hover:bg-primary active:bg-primary/80 transition-all duration-300 hover:scale-110 active:scale-95"
                       >
                         <social.icon size={18} className="text-primary group-hover:text-primary-foreground transition-colors" />
                         <div className="absolute inset-0 bg-primary rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

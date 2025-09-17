@@ -6,10 +6,24 @@ const CustomCursor: React.FC = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                            window.innerWidth < 768 || 
+                            'ontouchstart' in window;
+      setIsMobile(isMobileDevice);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
     const updatePosition = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      if (!isMobile) {
+        setPosition({ x: e.clientX, y: e.clientY });
+      }
     };
 
     const handleMouseEnter = () => {
@@ -50,6 +64,7 @@ const CustomCursor: React.FC = () => {
     });
 
     return () => {
+      window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mousemove', updatePosition);
       document.removeEventListener('mouseenter', handleMouseEnter);
       document.removeEventListener('mouseleave', handleMouseLeave);
@@ -61,9 +76,9 @@ const CustomCursor: React.FC = () => {
         el.removeEventListener('mouseleave', handleLinkHoverEnd);
       });
     };
-  }, []);
+  }, [isMobile]);
 
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined' || isMobile) return null;
 
   return (
     <>

@@ -50,15 +50,15 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-full max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-center py-6">
-            <Skeleton className="h-8 w-32" />
-            <Skeleton className="h-6 w-64" />
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex justify-between items-center py-4 sm:py-6">
+            <Skeleton className="h-6 sm:h-8 w-24 sm:w-32" />
+            <Skeleton className="h-4 sm:h-6 w-32 sm:w-64" />
           </div>
-          <div className="h-screen flex flex-col items-center justify-center space-y-6">
-            <Skeleton className="h-16 w-3/4 md:w-1/2" />
-            <Skeleton className="h-8 w-2/3 md:w-1/3" />
-            <Skeleton className="h-10 w-32 mt-4" />
+          <div className="h-screen flex flex-col items-center justify-center space-y-4 sm:space-y-6">
+            <Skeleton className="h-12 sm:h-16 w-full max-w-md sm:max-w-lg" />
+            <Skeleton className="h-6 sm:h-8 w-3/4 sm:w-1/2" />
+            <Skeleton className="h-8 sm:h-10 w-24 sm:w-32 mt-2 sm:mt-4" />
           </div>
         </div>
       </div>

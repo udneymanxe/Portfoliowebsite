@@ -96,7 +96,7 @@ const HeroSection: React.FC = () => {
       
       <div className="relative z-10 max-w-4xl mx-auto hero-content opacity-0 translate-y-8">
         <h1 
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 sm:mb-8 leading-tight"
           style={{ perspective: '800px' }} // Add perspective for 3D effect
         >
           {firstName.split("").map((char, index) => (
@@ -120,10 +120,10 @@ const HeroSection: React.FC = () => {
             ))}
           </span>
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+        <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 px-4 sm:px-0">
           Physics AI and Tech Enthusiast
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 sm:mb-8 px-4 sm:px-0">
           <a href="#about" className="btn-primary">
             Discover More
             <ArrowRight className="ml-2 h-4 w-4" />
