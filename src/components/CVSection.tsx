@@ -47,7 +47,7 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
   const summaryContent = (
     <div className="container max-w-4xl mx-auto text-center">
       <p className="text-lg text-muted-foreground mb-8">
-        Physics and AI Enthusiast | Exploring Science & Technology. Seeking opportunities in Medical Physics.
+        Physics & AI Enthusiast | Aspiring to build meaningful AI solutions for real-world impact.
       </p>
       <Button asChild className="mr-4">
         <Link to="/cv">
@@ -75,7 +75,7 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
         <div className="flex flex-col md:flex-row items-start justify-between mb-10">
           <div className="mb-6 md:mb-0">
             <h3 className="text-2xl font-bold mb-2">Mahesh Kumar Neupane</h3>
-            <p className="text-muted-foreground mb-4">Physics and AI Enthusiast | Exploring Science & Technology</p>
+            <p className="text-muted-foreground mb-4">Physics & AI Enthusiast | Building AI for Meaningful Impact</p>
             
             {/* Contact Info & Social Links - Arranged for clarity */}
             <div className="flex flex-col space-y-2 text-sm text-muted-foreground">
@@ -301,12 +301,12 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
           <div className="ml-14 space-y-6">
             <div className="cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out delay-100">
               <h4 className="font-medium mb-2">Programming Languages</h4>
-              <p className="text-muted-foreground text-sm">C, Matlab, Python (NumPy, Pandas, Matplotlib), R</p>
+              <p className="text-muted-foreground text-sm">C, Matlab, Python (NumPy, Pandas, Matplotlib)</p>
             </div>
             
             <div className="cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out delay-150">
               <h4 className="font-medium mb-2">Tools and Frameworks</h4>
-              <p className="text-muted-foreground text-sm">Jupyter Notebook, R studio, git, LaTex, PyTorch, TensorFlow</p>
+              <p className="text-muted-foreground text-sm">Jupyter Notebook, git, LaTex, PyTorch</p>
             </div>
             
             <div className="cv-item opacity-0 -translate-y-4 transition-all duration-700 ease-out delay-200">

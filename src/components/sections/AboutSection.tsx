@@ -10,9 +10,9 @@ interface AboutSectionProps {
 
 const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
-  const summaryText = "Physics graduate with a profound interest in medical physics and AI applications in healthcare. Dedicated to advancing diagnostic imaging, radiation therapy optimization, and computational modeling in clinical environments.";
+  const summaryText = "Physics graduate with a deep passion for AI and its transformative potential. Committed to leveraging artificial intelligence to solve meaningful real-world problems and drive positive impact in society.";
 
-  const detailedDescription = "As a physics graduate with deep expertise in theoretical and applied physics, I am passionate about translating fundamental physical principles into transformative medical technologies. My research interests focus on the convergence of artificial intelligence and medical physics, particularly in radiation therapy planning, medical imaging enhancement, and predictive modeling for patient outcomes. With two years of physics education experience, I have developed exceptional skills in communicating complex scientific concepts—an essential ability for collaborative research environments.";
+  const detailedDescription = "As a physics graduate with a strong foundation in theoretical and computational physics, I am driven by the vision of using AI to create meaningful change. My focus lies at the intersection of physics and artificial intelligence—applying machine learning, deep learning, and data-driven approaches to solve complex problems. With two years of physics education experience, I have developed exceptional skills in communicating complex scientific concepts and breaking down intricate ideas. I am passionate about building AI solutions that address real challenges, from scientific discovery to societal impact, and aspire to contribute meaningfully to the field of AI.";
 
   // Track mouse movement for interactive effects
   useEffect(() => {
@@ -193,7 +193,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
       <div className="relative z-10">
         <SectionTitle 
           title="About Me" 
-          subtitle={isSummary ? undefined : "Medical Physics Researcher | AI in Healthcare | Computational Modeling"}
+          subtitle={isSummary ? undefined : "Physics & AI Enthusiast | Machine Learning | Computational Science"}
           alignment='center'
         />
       
@@ -347,7 +347,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                         <div className="w-full h-full rounded-full overflow-hidden relative">
                           <img 
                             src="mkn.jpeg"
-                            alt="Mahesh Kumar Neupane - Medical Physics Researcher"
+                            alt="Mahesh Kumar Neupane - Physics & AI Enthusiast"
                             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-3"
                           />
                           {/* Dynamic Overlay */}
@@ -453,12 +453,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                   
                   <div className="flex flex-wrap gap-2 sm:gap-3">
                     {[
-                      { name: "Medical Imaging", icon: "🏥", level: 90 },
-                      { name: "AI in Healthcare", icon: "🤖", level: 85 },
-                      { name: "Radiation Physics", icon: "⚛️", level: 95 },
-                      { name: "Computational Modeling", icon: "💻", level: 88 },
-                      { name: "Treatment Planning", icon: "📊", level: 82 },
-                      { name: "Dosimetry", icon: "📏", level: 90 }
+                      { name: "DFT", icon: "⚛️", level: 95 },
+                      { name: "PINN", icon: "🧠", level: 88 },
+                      { name: "Computational Modeling", icon: "💻", level: 90 }
                     ].map((tag, index) => (
                       <div 
                         key={index} 
@@ -558,7 +555,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                 <div className="relative overflow-hidden rounded-xl">
                   <img 
                     src="mkn.jpeg"
-                    alt="Mahesh Kumar Neupane - Medical Physics Researcher"
+                    alt="Mahesh Kumar Neupane - Physics & AI Enthusiast"
                     className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out hover:scale-105"
                   />
                   {/* Subtle overlay */}
@@ -584,7 +581,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
               </div>
               <div>
                   <h3 className="text-2xl font-bold text-foreground">Mahesh Kumar Neupane</h3>
-                  <p className="text-primary font-medium">Medical Physics • AI Research • Computational Modeling</p>
+                  <p className="text-primary font-medium">Physics & AI • Machine Learning • Computational Science</p>
                 </div>
               </div>
             </div>
@@ -601,12 +598,12 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
               <h4 className="text-lg font-semibold text-foreground">Research Interests</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  "Radiation Therapy Planning",
-                  "Medical Image Processing",
-                  "Machine Learning in Healthcare",
+                  "Machine Learning & Deep Learning",
+                  "AI for Scientific Discovery",
+                  "Natural Language Processing",
                   "Computational Physics",
-                  "Treatment Optimization",
-                  "Dosimetry & Safety"
+                  "Computer Vision",
+                  "AI for Social Good"
                 ].map((interest, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>

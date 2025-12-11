@@ -41,8 +41,8 @@ const SkillsSection: React.FC = () => {
       description: "Programming languages and tools/frameworks proficiency",
       color: "from-green-500/10 to-primary/10",
       accent: "border-green-500/30",
-      languages: "C, Matlab, Python (NumPy, Pandas, Matplotlib), R",
-      tools: "Jupyter Notebook, R studio, git, LaTex, PyTorch, TensorFlow"
+      languages: "C, Matlab, Python (NumPy, Pandas, Matplotlib)",
+      tools: "Jupyter Notebook, git, LaTex, PyTorch"
     },
     {
       title: "Soft Skills",
@@ -152,7 +152,7 @@ const SkillsSection: React.FC = () => {
       <div className="relative z-10">
         <SectionTitle 
           title="Technical Skills"
-          subtitle="Expertise across medical physics and computational methods."
+          subtitle="Expertise across physics, AI, and computational methods."
           alignment="center"
         />
         

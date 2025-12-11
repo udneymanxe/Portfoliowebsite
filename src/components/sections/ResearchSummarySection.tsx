@@ -25,24 +25,24 @@ const ResearchSummarySection: React.FC = () => {
   const featuredResearch: ResearchPaper[] = [
     {
       id: 1,
-      title: "PD-L1-In-1 Cancer Immunotherapy Research",
-      description: "Theoretical investigation of PD-L1-In-1 for cancer immunotherapy using density functional theory.",
-      longDescription: "Comprehensive theoretical analysis of PD-L1-In-1 (C21H23N5O2) using DFT B3LYP functional with 6-311G(d) basis set, focusing on structural, electronic, and spectroscopic properties for cancer immunotherapy applications targeting the PD-1/PD-L1 pathway.",
-      website: "https://www.nature.com/articles/s41598-025-92180-9",
+      title: "Molecular Dynamics Study for Cancer Immunotherapy",
+      description: "DFT study of a dual-target small molecule inhibitor for cancer immunotherapy targeting the B7-CD28/CTLA-4 signaling axis.",
+      longDescription: "Comprehensive in silico characterization of a novel small molecule inhibitor using DFT at B3LYP/6-311G(d) level. The study revealed strong binding affinities toward CD80 (−7.54 kcal·mol⁻¹) and CTLA-4 (−7.97 kcal·mol⁻¹), with favorable ADMET properties for immunotherapy application.",
+      website: "https://pubs.acs.org/doi/10.1021/acsomega.5c05359",
       achievements: [
         {
-          title: "Published in Nature",
-          subtitle: "Scientific Reports Journal",
+          title: "Published in ACS Omega",
+          subtitle: "First Author",
           icon: Award
         },
         {
-          title: "Co-Author",
-          subtitle: "Medical Physics Research",
+          title: "Dual-Target Inhibitor",
+          subtitle: "Cancer Immunotherapy",
           icon: BookOpen
         }
       ],
-      methods: ["Density Functional Theory", "Quantum Chemistry", "Molecular Docking", "Gaussian 09W", "AutoDock Vina"],
-      journal: "Nature Scientific Reports",
+      methods: ["Density Functional Theory", "Molecular Dynamics", "Molecular Docking", "ADMET Analysis", "AutoDock Vina"],
+      journal: "ACS Omega",
       status: "Published",
       year: "2025"
     }
@@ -61,7 +61,7 @@ const ResearchSummarySection: React.FC = () => {
             Recent Research
           </h2>
           <p className="text-lg text-muted-foreground">
-            Published work in medical physics and computational chemistry
+            Published work in computational chemistry and physics
           </p>
         </div>
 

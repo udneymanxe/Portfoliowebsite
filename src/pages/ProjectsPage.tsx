@@ -98,7 +98,7 @@ const ProjectsPage: React.FC = () => {
                       <Button asChild size="sm" className="bg-primary hover:bg-primary/90">
                         <a href={project.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                           <ExternalLink className="w-4 h-4" />
-                          {project.category === "Medical Physics" ? "Read Paper" : "Visit Project"}
+                          {project.category === "Research" ? "Read Paper" : "Visit Project"}
                         </a>
                       </Button>
                     <Button asChild variant="outline" size="sm">

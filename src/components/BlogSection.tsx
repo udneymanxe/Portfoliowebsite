@@ -26,7 +26,7 @@ const BlogSection: React.FC<BlogSectionProps> = ({ isSummary = false }) => {
     <section id="blog" className={`section ${isSummary ? 'py-16 bg-secondary/30' : ''}`}>
       <SectionTitle 
         title="From the Blog" 
-        subtitle={isSummary ? "Latest thoughts and insights." : "Thoughts, insights, and discussions on medical physics and beyond."}
+        subtitle={isSummary ? "Latest thoughts and insights." : "Thoughts, insights, and discussions on AI, physics, and technology."}
         alignment='center'
       />
       

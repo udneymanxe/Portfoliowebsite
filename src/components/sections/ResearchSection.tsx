@@ -30,7 +30,7 @@ const ResearchSection: React.FC = () => {
     <section id="research" className="section bg-secondary/30">
       <SectionTitle 
         title="Research Projects" 
-        subtitle="Innovative research endeavors pushing the boundaries of medical physics."
+        subtitle="Research at the intersection of physics, AI, and computational science."
       />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
