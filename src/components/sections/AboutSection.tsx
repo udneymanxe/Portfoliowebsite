@@ -10,9 +10,9 @@ interface AboutSectionProps {
 
 const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
-  const summaryText = "Physics graduate with a deep passion for AI and its transformative potential. Committed to leveraging artificial intelligence to solve meaningful real-world problems and drive positive impact in society.";
+  const summaryText = "Physics graduate with a strong foundation in computational and theoretical physics, eager to advance pharmaceutical sciences through materials science and molecular engineering. Committed to bridging physics, chemistry, and pharmaceutical sciences to develop innovative drug delivery systems and biopharmaceutical materials that transform healthcare.";
 
-  const detailedDescription = "As a physics graduate with a strong foundation in theoretical and computational physics, I am driven by the vision of using AI to create meaningful change. My focus lies at the intersection of physics and artificial intelligence—applying machine learning, deep learning, and data-driven approaches to solve complex problems. With two years of physics education experience, I have developed exceptional skills in communicating complex scientific concepts and breaking down intricate ideas. I am passionate about building AI solutions that address real challenges, from scientific discovery to societal impact, and aspire to contribute meaningfully to the field of AI.";
+  const detailedDescription = "As a physics graduate with expertise in computational modeling and molecular dynamics, I am passionate about applying materials science principles to pharmaceutical innovation. My research experience in computational chemistry and molecular simulations has equipped me with a deep understanding of material properties, drug-excipient interactions, and formulation science. I employ advanced computational techniques—including density functional theory (DFT), molecular dynamics (MD), and quantum chemistry—to investigate pharmaceutical materials, optimize drug delivery systems, and design novel biopharmaceutical formulations. With two years of physics teaching experience, I have honed my ability to communicate complex interdisciplinary concepts, essential for bridging physics, chemistry, and pharmaceutical sciences. I aspire to contribute to the development of next-generation pharmaceutical materials that enhance bioavailability, stability, and therapeutic efficacy.";
 
   // Track mouse movement for interactive effects
   useEffect(() => {
@@ -193,7 +193,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
       <div className="relative z-10">
         <SectionTitle 
           title="About Me" 
-          subtitle={isSummary ? undefined : "Physics & AI Enthusiast | Machine Learning | Computational Science"}
+          subtitle={isSummary ? undefined : "Materials Science | Pharmaceutical Physics | Computational Chemistry"}
           alignment='center'
         />
       
@@ -347,7 +347,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                         <div className="w-full h-full rounded-full overflow-hidden relative">
                           <img 
                             src="mkn.jpeg"
-                            alt="Mahesh Kumar Neupane - Physics & AI Enthusiast"
+                            alt="Mahesh Kumar Neupane - Pharmaceutical Materials Researcher"
                             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-3"
                           />
                           {/* Dynamic Overlay */}
@@ -391,7 +391,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                   <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
                     Bridging Physics & 
                     <span className="relative inline-block ml-2">
-                      <span className="text-primary">Medicine</span>
+                      <span className="text-primary">Pharmaceuticals</span>
                       <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary/30"></div>
                     </span>
                   </h2>
@@ -407,7 +407,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                   {[
                     { label: "Physics Degree", value: "B.S.", icon: "🎓", color: "from-blue-500/10 to-primary/10" },
                     { label: "Teaching Exp.", value: "2+ Years", icon: "👨‍🏫", color: "from-green-500/10 to-primary/10" },
-                    { label: "Research Focus", value: "AI + Medical", icon: "🔬", color: "from-purple-500/10 to-primary/10" },
+                    { label: "Research Focus", value: "Pharma Materials", icon: "🔬", color: "from-purple-500/10 to-primary/10" },
                     { label: "From", value: "Nepal", icon: "🏔️", color: "from-orange-500/10 to-primary/10" }
                   ].map((stat, index) => (
                     <div key={index} className="group relative overflow-hidden rounded-xl border border-primary/10 hover:border-primary/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1">
@@ -453,9 +453,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                   
                   <div className="flex flex-wrap gap-2 sm:gap-3">
                     {[
-                      { name: "DFT", icon: "⚛️", level: 95 },
-                      { name: "PINN", icon: "🧠", level: 88 },
-                      { name: "Computational Modeling", icon: "💻", level: 90 }
+                      { name: "DFT & Quantum Chemistry", icon: "⚛️", level: 95 },
+                      { name: "Pharmaceutical Materials", icon: "💊", level: 88 },
+                      { name: "Molecular Simulations", icon: "🔬", level: 92 }
                     ].map((tag, index) => (
                       <div 
                         key={index} 
@@ -555,7 +555,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
                 <div className="relative overflow-hidden rounded-xl">
                   <img 
                     src="mkn.jpeg"
-                    alt="Mahesh Kumar Neupane - Physics & AI Enthusiast"
+                    alt="Mahesh Kumar Neupane - Pharmaceutical Materials Researcher"
                     className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out hover:scale-105"
                   />
                   {/* Subtle overlay */}
@@ -581,7 +581,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
               </div>
               <div>
                   <h3 className="text-2xl font-bold text-foreground">Mahesh Kumar Neupane</h3>
-                  <p className="text-primary font-medium">Physics & AI • Machine Learning • Computational Science</p>
+                  <p className="text-primary font-medium">Materials Science • Pharmaceutical Physics • Computational Chemistry</p>
                 </div>
               </div>
             </div>
@@ -598,12 +598,12 @@ const AboutSection: React.FC<AboutSectionProps> = ({ isSummary = false }) => {
               <h4 className="text-lg font-semibold text-foreground">Research Interests</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  "Machine Learning & Deep Learning",
-                  "AI for Scientific Discovery",
-                  "Natural Language Processing",
-                  "Computational Physics",
-                  "Computer Vision",
-                  "AI for Social Good"
+                  "Pharmaceutical Materials Science",
+                  "Drug Delivery Systems",
+                  "Molecular Dynamics & Simulations",
+                  "Formulation Science",
+                  "Biopharmaceutical Engineering",
+                  "Computational Drug Design"
                 ].map((interest, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
