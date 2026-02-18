@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import SectionTitle from '@/components/SectionTitle';
-import { ExternalLink, Award, BookOpen, Users, Calendar, Quote, ChevronRight, Star } from 'lucide-react';
+import { ExternalLink, Award, BookOpen, Calendar, Quote, ChevronRight, Star, Atom, Microscope, Dna, FileText, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ResearchPage: React.FC = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const researchPapers = [
     {
       id: 1,
@@ -25,20 +31,13 @@ const ResearchPage: React.FC = () => {
       published: "November 26, 2025",
       doi: "https://doi.org/10.1021/acsomega.5c05359",
       url: "https://pubs.acs.org/doi/10.1021/acsomega.5c05359",
-      abstract: "Small-molecule inhibitors targeting the B7−CD28 pathway represent a promising strategy for cancer immunotherapy. This study presents a comprehensive in silico characterization of 2-(4-fluorophenyl)-6-methyl-4-(3-(trifluoromethyl)-phenyl)-1,2-dihydropyrazolo[3,4-b:3′,4′-d]-pyridin-3(6H)-one to evaluate its potential as a dual-target inhibitor within the B7-CD28 pathway. Using density functional theory (DFT) at the B3LYP/6-311G(d) level, the molecule’s structural and electronic properties were thoroughly characterized. Simulated spectroscopic profiles (FT-IR, Raman, and UV−Vis) were generated, with vibrational modes validated through potential energy distribution (PED) analysis. Electronic characterization—including the HOMO−LUMO energy gap, density of states (DOS), and topological descriptors such as the electron localization function (ELF), localized orbital locator (LOL), and reduced density gradient (RDG)—highlighted features governing the molecule’s reactivity and stability. Natural bond orbital (NBO) analysis quantified key hyperconjugative interactions (E(2)) contributing to intramolecular stability, while local reactivity was further examined using Fukui functions. The 1H and 13C NMR chemical shifts were predicted via the gauge-independent atomic orbital (GIAO) method. Molecular docking with AutoDock Vina revealed strong binding affinities toward CD80 (−7.54 kcal·mol⁻¹) and CTLA-4 (−7.97 kcal·mol⁻¹), suggesting effective inhibition of the B7−CD28/CTLA-4 signaling axis. Additionally, in silico ADMET analysis indicated favorable pharmacokinetic and absorption properties, supporting the compound’s potential as a promising immunotherapeutic candidate.",
-      keywords: ["DFT", "B7-CD28", "Cancer Immunotherapy", "Molecular Docking", "ADMET", "FT-IR", "Raman", "NBO", "HOMO-LUMO", "AutoDock Vina"],
-      subjects: ["Biophysics", "Computational Chemistry", "Drug Discovery", "Cancer Immunotherapy"],
-      significance: "This research demonstrates the potential of a small-molecule inhibitor to effectively target the B7−CD28/CTLA-4 signaling axis for cancer immunotherapy. The strong binding affinities and favorable ADMET properties position this compound as a promising immunotherapeutic candidate, offering advantages over antibody-based therapies including lower production costs and improved bioavailability.",
-      methodology: [
-        "Density Functional Theory (DFT) at B3LYP/6-311G(d) level",
-        "Spectroscopic analysis (FT-IR, Raman, UV-Vis)",
-        "Natural Bond Orbital (NBO) analysis",
-        "HOMO-LUMO energy gap and DOS analysis",
-        "Topological analysis (ELF, LOL, RDG)",
-        "Molecular docking with AutoDock Vina",
-        "In silico ADMET analysis"
-      ],
-      isFirstAuthor: true
+      abstract: "Small-molecule inhibitors targeting the B7−CD28 pathway represent a promising strategy for cancer immunotherapy. This study presents a comprehensive in silico characterization of a novel compound to evaluate its potential as a dual-target inhibitor. Using density functional theory (DFT) at the B3LYP/6-311G(d) level, we characterized structural and electronic properties, simulated spectroscopic profiles, and performed molecular docking with AutoDock Vina, revealing strong binding affinities toward CD80 and CTLA-4.",
+      keywords: ["DFT", "Cancer Immunotherapy", "Molecular Docking", "ADMET", "HOMO-LUMO"],
+      subjects: ["Biophysics", "Computational Chemistry", "Drug Discovery"],
+      significance: "Demonstrates the potential of a small-molecule inhibitor to effectively target the B7−CD28/CTLA-4 signaling axis, offering a cost-effective alternative to antibody therapies.",
+      methodology: ["DFT (B3LYP/6-311G(d))", "Spectroscopic Analysis", "NBO Analysis", "Topological Analysis (ELF, LOL)", "Molecular Docking", "ADMET Profiling"],
+      isFirstAuthor: true,
+      icon: <Dna className="w-6 h-6 text-primary" />
     },
     {
       id: 2,
@@ -60,188 +59,272 @@ const ResearchPage: React.FC = () => {
       published: "20 August 2025",
       doi: "https://doi.org/10.1038/s41598-025-92180-9",
       url: "https://www.nature.com/articles/s41598-025-92180-9",
-      abstract: "This study presents a comprehensive theoretical analysis of PD-L1-In-1 (C21H23N5O2) using the B3LYP functional with the 6-311G(d) basis set, focusing on its structural, electronic, and spectroscopic properties. Fourier Transform Infrared (FT-IR), Raman, and UV–Vis spectra were simulated, and vibrational modes were assigned via potential energy distribution (PED) analysis using the VEDA 4 program. Natural Bond Orbital (NBO) analysis revealed hyperconjugative interactions (E2) and provided insights into donor–acceptor electron densities. The energy band gap was obtained from HOMO–LUMO calculations and further analyzed through the density of states (DOS) spectrum. Electron Localization Function (ELF) and Localized Orbital Locator (LOL) analyses, performed using Multiwfn, highlighted regions of electron localization and orbital overlap. Reduced Density Gradient (RDG) analysis uncovered non-covalent interactions. Ground-state 1H and 13C NMR chemical shifts were predicted using the Gauge-Independent Atomic Orbital (GIAO) method. Fukui function analysis identified reactive sites and evaluated the chemical reactivity of the molecule. Molecular docking studies using AutoDock Vina explored interactions between PD-L1-In-1 and the PD-L1 checkpoint protein, shedding light on its potential biological activity. Notably, the simulations indicated strong ligand–protein interactions, positioning PD-L1-In-1 as a promising candidate for cancer immunotherapy targeting the PD-1/PD-L1 pathway.",
-      keywords: ["DFT", "PD-L1", "PD-1", "Immunotherapy", "Molecular docking", "FT-IR", "Raman", "RDG", "ELF", "LOL", "PED assignment", "Multiwfn", "VEDA", "Gaussian", "AutoDock"],
-      subjects: ["Biochemistry", "Biophysics", "Cancer", "Chemistry", "Drug discovery", "Materials science", "Physics"],
-      significance: "This research contributes to the understanding of PD-L1-In-1 as a potential cancer immunotherapy agent, providing theoretical insights that may guide future experimental research and drug development targeting the PD-1/PD-L1 pathway.",
-      methodology: [
-        "Density Functional Theory (DFT) calculations using B3LYP/6-311G(d)",
-        "Molecular geometry optimization using Gaussian 09W",
-        "Spectroscopic analysis (FT-IR, Raman, UV-Vis)",
-        "Natural Bond Orbital (NBO) analysis",
-        "Molecular docking studies with AutoDock Vina",
-        "Electronic structure analysis using Multiwfn"
-      ],
-      isFirstAuthor: false
+      abstract: "A comprehensive theoretical analysis of PD-L1-In-1 using DFT (B3LYP/6-311G(d)). We simulated FT-IR, Raman, and UV–Vis spectra, performed NBO analysis for hyperconjugative interactions, and analyzed electronic properties via HOMO–LUMO and DOS. Molecular docking studies explored interactions with the PD-L1 checkpoint protein, indicating strong ligand–protein interactions promising for cancer immunotherapy.",
+      keywords: ["DFT", "PD-L1", "Immunotherapy", "Molecular Docking", "Electronic Structure"],
+      subjects: ["Biophysics", "Cancer Research", "Material Science"],
+      significance: "Provides theoretical insights into PD-L1-In-1 as a potential immunotherapy agent, guiding future experimental research targeting the PD-1/PD-L1 pathway.",
+      methodology: ["DFT Calculations", "Geometry Optimization", "Spectroscopic Analysis", "NBO Analysis", "Molecular Docking", "Electronic Structure (Multiwfn)"],
+      isFirstAuthor: false,
+      icon: <Atom className="w-6 h-6 text-primary" />
     }
   ];
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      setMousePosition({
+        x: (clientX / innerWidth) * 100,
+        y: (clientY / innerHeight) * 100
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header Animation
+      gsap.from('.research-header > *', {
+        y: 30,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.15,
+        ease: 'power3.out'
+      });
+
+      // Cards Animation
+      gsap.from('.research-card', {
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'back.out(1.7)',
+        scrollTrigger: {
+          trigger: '.research-list',
+          start: 'top 80%',
+        }
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-background">
+      <main ref={containerRef} className="min-h-screen bg-background relative overflow-hidden">
+        {/* Dynamic Background */}
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div 
+            className="absolute inset-0 transition-all duration-1000 ease-out"
+            style={{
+              background: `
+                radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
+                  rgba(var(--primary-rgb), 0.08) 0%, 
+                  rgba(var(--primary-rgb), 0.02) 40%, 
+                  transparent 60%),
+                linear-gradient(to bottom, hsl(var(--background)), hsl(var(--background) / 0.95))`
+            }}
+          />
+          {/* Floating Molecules/Orbs */}
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-primary/5 blur-3xl animate-pulse-slow"
+              style={{
+                width: `${Math.random() * 300 + 100}px`,
+                height: `${Math.random() * 300 + 100}px`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDuration: `${Math.random() * 5 + 5}s`,
+                animationDelay: `${Math.random() * 2}s`,
+                transform: `translate(${mousePosition.x * 0.02 * (i % 2 === 0 ? 1 : -1)}px, ${mousePosition.y * 0.02 * (i % 2 === 0 ? 1 : -1)}px)`
+              }}
+            />
+          ))}
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+        </div>
+
         {/* Hero Section */}
-        <section className="pt-32 pb-16">
-          <div className="container max-w-4xl mx-auto px-6">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-                <BookOpen className="w-4 h-4 mr-2" />
-                Published Research
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Research Papers
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Peer-reviewed publications in computational chemistry and physics
-              </p>
+        <section className="relative pt-32 pb-16 z-10 research-header">
+          <div className="container max-w-5xl mx-auto px-6 text-center">
+            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 border border-primary/20 backdrop-blur-sm">
+              <Microscope className="w-4 h-4 mr-2" />
+              <span>Scientific Publications</span>
             </div>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
+              Exploring the <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-500">Quantum</span> Frontier
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Bridging computational physics and medicine through advanced molecular simulations and density functional theory.
+            </p>
           </div>
         </section>
 
         {/* Research Papers Section */}
-        <section className="pb-20">
-          <div className="container max-w-4xl mx-auto px-6">
-            {researchPapers.map((paper) => (
-              <article key={paper.id} className={`bg-card border ${paper.isFirstAuthor ? 'border-primary/50 shadow-md' : 'border-border'} rounded-2xl p-8 mb-12 hover:shadow-lg transition-all duration-300`}>
+        <section className="relative pb-24 z-10 research-list">
+          <div className="container max-w-5xl mx-auto px-6">
+            {researchPapers.map((paper, index) => (
+              <article 
+                key={paper.id} 
+                className={`research-card group relative bg-card/50 backdrop-blur-md border ${paper.isFirstAuthor ? 'border-primary/40 shadow-[0_0_30px_-10px_rgba(var(--primary-rgb),0.2)]' : 'border-border/60'} rounded-3xl p-8 mb-12 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-primary/60 hover:-translate-y-1`}
+              >
+                {/* Hover Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                
                 {/* Paper Header */}
-                <header className="mb-8">
-                  <div className="flex items-center gap-2 mb-4 flex-wrap">
-                    <Badge variant="secondary" className="bg-primary/10 text-primary">
-                      <Award className="w-3 h-3 mr-1" />
+                <header className="relative z-10 mb-8">
+                  <div className="flex items-center gap-3 mb-5 flex-wrap">
+                    <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors px-3 py-1">
+                      <Award className="w-3.5 h-3.5 mr-1.5" />
                       {paper.journal}
                     </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      <Calendar className="w-3 h-3 mr-1" />
+                    <Badge variant="outline" className="text-xs border-primary/20 text-muted-foreground">
+                      <Calendar className="w-3.5 h-3.5 mr-1.5" />
                       {paper.published}
                     </Badge>
                     {paper.isFirstAuthor && (
-                      <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20">
-                        <Star className="w-3 h-3 mr-1 fill-current" />
+                      <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20 shadow-sm animate-pulse-slow">
+                        <Star className="w-3.5 h-3.5 mr-1.5 fill-current" />
                         First Author
                       </Badge>
                     )}
                   </div>
                   
-                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 leading-tight">
-                    {paper.title}
-                  </h2>
+                  <div className="flex items-start justify-between gap-6">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 leading-tight group-hover:text-primary transition-colors duration-300">
+                      {paper.title}
+                    </h2>
+                    <div className="hidden md:flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-500">
+                      {paper.icon}
+                    </div>
+                  </div>
                   
                   {/* Authors */}
-                  <div className="mb-4">
-                    <h3 className="text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">
-                      Authors
+                  <div className="mb-6 p-4 rounded-xl bg-muted/30 border border-border/50">
+                    <h3 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider flex items-center">
+                      <Users className="w-3.5 h-3.5 mr-2" />
+                      Research Team
                     </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {paper.authors.map((author, index) => (
-                        <span key={index} className={`text-sm ${author.highlight ? 'font-semibold text-primary' : 'text-muted-foreground'}`}>
-                          {author.name}{index < paper.authors.length - 1 && ','}
+                    <div className="flex flex-wrap gap-x-2 gap-y-1">
+                      {paper.authors.map((author, idx) => (
+                        <span key={idx} className={`text-sm ${author.highlight ? 'font-semibold text-primary bg-primary/5 px-2 py-0.5 rounded-md' : 'text-muted-foreground'}`}>
+                          {author.name}{idx < paper.authors.length - 1 && <span className="text-muted-foreground/40 ml-1">,</span>}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  {/* Journal Info */}
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6 flex-wrap">
-                    <span className="font-medium">{paper.journal}</span>
-                    <span>•</span>
-                    <span>Volume {paper.volume}</span>
-                    <span>•</span>
-                    <span>Article {paper.articleNumber}</span>
-                    <span>•</span>
+                  {/* Journal Details */}
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6 flex-wrap font-mono opacity-80">
+                    <span>{paper.journal}</span>
+                    <span className="text-primary/40">•</span>
+                    <span>Vol. {paper.volume}</span>
+                    <span className="text-primary/40">•</span>
+                    <span>No. {paper.articleNumber}</span>
+                    <span className="text-primary/40">•</span>
                     <span>{paper.year}</span>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    <Button asChild className="bg-primary hover:bg-primary/90">
+                  {/* Actions */}
+                  <div className="flex flex-wrap gap-3">
+                    <Button asChild className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-primary/20 transition-all duration-300">
                       <a href={paper.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                         <ExternalLink className="w-4 h-4" />
-                        Read Full Paper
+                        Read Publication
                       </a>
                     </Button>
-                    <Button asChild variant="outline">
+                    <Button asChild variant="outline" className="border-primary/20 hover:bg-primary/5 hover:text-primary transition-colors">
                       <a href={paper.doi} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                         <BookOpen className="w-4 h-4" />
-                        DOI
+                        DOI Access
                       </a>
                     </Button>
                   </div>
                 </header>
 
-                {/* Abstract */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                    <Quote className="w-5 h-5 mr-2 text-primary" />
-                    Abstract
-                  </h3>
-                  <div className="bg-primary/5 border-l-4 border-primary/30 p-4 rounded-r-lg">
-                    <p className="text-muted-foreground leading-relaxed">
-                      {paper.abstract}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Research Significance */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    Research Significance
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {paper.significance}
-                  </p>
-                </div>
-
-                {/* Methodology */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    Key Methodologies
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {paper.methodology.map((method, index) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">{method}</span>
+                {/* Content Grid */}
+                <div className="grid md:grid-cols-2 gap-8 relative z-10">
+                  {/* Abstract Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
+                        <Quote className="w-5 h-5 mr-2 text-primary" />
+                        Abstract
+                      </h3>
+                      <div className="relative">
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-transparent rounded-full opacity-50" />
+                        <p className="pl-5 text-muted-foreground leading-relaxed text-sm md:text-base">
+                          {paper.abstract}
+                        </p>
                       </div>
-                    ))}
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">Keywords</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {paper.keywords.map((keyword, idx) => (
+                          <Badge key={idx} variant="secondary" className="bg-muted/50 hover:bg-primary/10 hover:text-primary transition-colors cursor-default text-xs font-normal border border-transparent hover:border-primary/20">
+                            {keyword}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Keywords */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    Keywords
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {paper.keywords.map((keyword, index) => (
-                      <Badge key={index} variant="secondary" className="bg-muted text-muted-foreground text-xs">
-                        {keyword}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
+                  {/* Details Column */}
+                  <div className="space-y-6">
+                    <div className="bg-primary/5 rounded-2xl p-5 border border-primary/10">
+                      <h3 className="text-sm font-semibold text-primary mb-3 uppercase tracking-wide flex items-center">
+                        <Star className="w-4 h-4 mr-2" />
+                        Significance
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {paper.significance}
+                      </p>
+                    </div>
 
-                {/* Research Subjects */}
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    Research Areas
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {paper.subjects.map((subject, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {subject}
-                      </Badge>
-                    ))}
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">Methodologies</h3>
+                      <div className="grid grid-cols-1 gap-2">
+                        {paper.methodology.map((method, idx) => (
+                          <div key={idx} className="flex items-center gap-3 text-sm text-muted-foreground group/item">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors" />
+                            <span className="group-hover/item:text-foreground transition-colors">{method}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">Fields</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {paper.subjects.map((subject, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs font-normal text-muted-foreground border-border/60">
+                            {subject}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </article>
             ))}
 
-            {/* More Research Coming Soon */}
-            <div className="text-center py-12">
-              <div className="inline-flex items-center gap-2 text-muted-foreground">
-                <div className="w-2 h-2 bg-muted-foreground/30 rounded-full"></div>
-                <span className="text-sm">More research publications coming soon</span>
-                <div className="w-2 h-2 bg-muted-foreground/30 rounded-full"></div>
+            {/* Coming Soon */}
+            <div className="text-center py-16 relative z-10">
+              <div className="inline-flex items-center justify-center p-1 rounded-full bg-muted/30 backdrop-blur-sm border border-border/50">
+                <div className="px-6 py-2 rounded-full bg-background/50 flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0s' }} />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.2s' }} />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.4s' }} />
+                  </div>
+                  <span className="text-sm font-medium text-muted-foreground">More groundbreaking research in progress</span>
+                </div>
               </div>
             </div>
           </div>
