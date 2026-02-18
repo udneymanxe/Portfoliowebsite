@@ -166,10 +166,31 @@ export default {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' }
 				},
-				'text-reveal': {
-					'0%': { transform: 'translateY(100%)', opacity: '0' },
-					'100%': { transform: 'translateY(0)', opacity: '1' }
-				},
+			'mandala-wave': {
+				'0%': { transform: 'scale(0.85)', opacity: '0.5' },
+				'100%': { transform: 'scale(1.8)', opacity: '0' }
+			},
+			'mandala-breathe': {
+				'0%, 100%': { transform: 'scale(1)', opacity: '0.4' },
+				'50%': { transform: 'scale(1.12)', opacity: '0.75' }
+			},
+			'mandala-shimmer': {
+				'0%, 100%': { opacity: '0.15', filter: 'brightness(1)' },
+				'33%': { opacity: '0.5', filter: 'brightness(1.4)' },
+				'66%': { opacity: '0.25', filter: 'brightness(0.9)' }
+			},
+			'mandala-sparkle': {
+				'0%, 100%': { opacity: '0', transform: 'scale(0) rotate(0deg)' },
+				'50%': { opacity: '1', transform: 'scale(1) rotate(180deg)' }
+			},
+			'energy-pulse': {
+				'0%, 100%': { boxShadow: '0 0 20px rgba(245, 209, 69, 0.2), 0 0 40px rgba(245, 209, 69, 0.1)', opacity: '0.6' },
+				'50%': { boxShadow: '0 0 40px rgba(245, 209, 69, 0.4), 0 0 80px rgba(245, 209, 69, 0.2), 0 0 120px rgba(245, 209, 69, 0.1)', opacity: '1' }
+			},
+			'text-reveal': {
+				'0%': { transform: 'translateY(100%)', opacity: '0' },
+				'100%': { transform: 'translateY(0)', opacity: '1' }
+			},
 				'slide-up': {
 					'0%': { transform: 'translateY(20px)', opacity: '0' },
 					'100%': { transform: 'translateY(0)', opacity: '1' }
@@ -211,8 +232,13 @@ export default {
 				'spin-ultra-fast-hover': 'spin-ultra-fast-hover 3s linear infinite',
 				'spin-hyper-slow-hover': 'spin-hyper-slow-hover 40s linear infinite',
 				'spin-hyper-fast-hover': 'spin-hyper-fast-hover 1.5s linear infinite',
-				'spin-mega-slow-hover': 'spin-mega-slow-hover 10000s linear infinite',
-				'text-reveal': 'text-reveal 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards',
+			'spin-mega-slow-hover': 'spin-mega-slow-hover 10000s linear infinite',
+			'mandala-wave': 'mandala-wave 6s ease-out infinite',
+			'mandala-breathe': 'mandala-breathe 8s ease-in-out infinite',
+			'mandala-shimmer': 'mandala-shimmer 5s ease-in-out infinite',
+			'mandala-sparkle': 'mandala-sparkle 3s ease-in-out infinite',
+			'energy-pulse': 'energy-pulse 4s ease-in-out infinite',
+			'text-reveal': 'text-reveal 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards',
 				'slide-up': 'slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
 				'slide-down': 'slide-down 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
 				'slide-left': 'slide-left 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',

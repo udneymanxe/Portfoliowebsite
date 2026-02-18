@@ -496,6 +496,66 @@ body.page-2 .shared-card {
   margin-right: 0;
 }
 
+/* ===== Magical Mandala Keyframes ===== */
+@keyframes mandala-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mandala-rotate-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes mandala-wave {
+  0% { transform: scale(0.85); opacity: 0.5; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes mandala-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.12); opacity: 0.75; }
+}
+
+@keyframes mandala-shimmer {
+  0%, 100% { opacity: 0.15; filter: brightness(1); }
+  33% { opacity: 0.5; filter: brightness(1.4); }
+  66% { opacity: 0.25; filter: brightness(0.9); }
+}
+
+@keyframes mandala-sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+@keyframes mandala-orbit {
+  0% { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+}
+
+@keyframes energy-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.2), 0 0 40px hsl(var(--primary) / 0.1);
+    opacity: 0.6;
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.4), 0 0 80px hsl(var(--primary) / 0.2), 0 0 120px hsl(var(--primary) / 0.1);
+    opacity: 1;
+  }
+}
+
+/* Scroll Line Indicator */
+@keyframes scroll-line-move {
+  0% { transform: translateY(-100%); opacity: 0; }
+  25% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { transform: translateY(200%); opacity: 0; }
+}
+
+.scroll-line-anim {
+  animation: scroll-line-move 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 /* Character Wave Animation Styles */
 .hover-name-reveal {
     font-size: clamp(3rem, 10vw, 6rem); /* Adjust size as needed */

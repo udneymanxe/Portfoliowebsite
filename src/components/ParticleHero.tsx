@@ -19,33 +19,32 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
     if (!ctx) return;
     
     let particlesArray: Particle[] = [];
-    // Optimize particle count based on performance capabilities
+    let animationId: number;
+
     const getParticleCount = () => {
-      if (reduceParticles) {
-        return isMobile ? 300 : 800; // Very reduced for low-end devices
-      }
-      if (isMobile) {
-        return 800; // Standard mobile count
-      }
-      return 2000; // Desktop count (reduced from 3000)
+      if (reduceParticles) return isMobile ? 120 : 350;
+      if (isMobile) return 250;
+      return 600;
     };
     const particleCount = getParticleCount();
     
-    // Mouse/Touch interaction settings - optimized for performance
+    const connectionDistance = isMobile ? 70 : 110;
+    const connectionDistanceSq = connectionDistance * connectionDistance;
+    const mouseConnectionBoost = isMobile ? 100 : 180;
+    
     const mouse = {
       x: null as number | null,
       y: null as number | null,
-      radius: isMobile ? 60 : 100 // Reduced interaction radius for mobile
+      radius: isMobile ? 80 : 130
     };
     
     const interactionSettings = {
-      forceStrength: reduceAnimations ? 0.5 : 1,      // Reduced force for low-end devices
-      friction: 0.98,      // Slows particles down (0 to 1)
-      minDistance: 30,       // Minimum distance before force maxes out
-      interactionMode: 'repel' as 'repel' | 'attract' // Can be 'repel' or 'attract'
+      forceStrength: reduceAnimations ? 0.6 : 1.2,
+      friction: 0.97,
+      minDistance: 25,
+      returnForce: 0.002,
     };
     
-    // Particle Class
     class Particle {
       x: number;
       y: number;
@@ -54,75 +53,58 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
       baseY: number;
       density: number;
       color: string;
+      alpha: number;
       vx: number;
       vy: number;
+      depth: number;
       
       constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.size = Math.random() * 2 + 1; // Particle size range
-        this.baseX = this.x; // Store original position
-        this.baseY = this.y; // Store original position
-        this.density = (Math.random() * 30) + 1; // Affects how much force moves it
+        this.depth = Math.random();
+        this.size = 0.5 + this.depth * 2.5;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 30) + 1;
         
-        // Gold theme colors to match the website theme
-        const hue = Math.random() > 0.8 ? 47 : Math.random() * 20 + 30; // 80% dark particles, 20% gold
-        const saturation = Math.random() > 0.8 ? '80%' : '30%';
-        const lightness = Math.random() > 0.8 ? '50%' : '30%';
+        const isGold = Math.random() > 0.75;
+        const hue = isGold ? 47 : Math.random() * 20 + 30;
+        const saturation = isGold ? '80%' : '30%';
+        const lightness = isGold ? '50%' : '25%';
+        this.alpha = isGold ? (0.5 + this.depth * 0.5) : (0.15 + this.depth * 0.35);
         this.color = `hsl(${hue}, ${saturation}, ${lightness})`;
         
-        // Initial random velocity
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
       }
       
-      // Calculate distance and apply mouse force
       update() {
-        // --- Add subtle constant jitter ---
-        const JITTER_STRENGTH = 0.015; // Adjust this value for more/less faint motion
-        this.vx += (Math.random() - 0.5) * JITTER_STRENGTH;
-        this.vy += (Math.random() - 0.5) * JITTER_STRENGTH;
-        // --- End Jitter ---
+        const jitter = 0.012;
+        this.vx += (Math.random() - 0.5) * jitter;
+        this.vy += (Math.random() - 0.5) * jitter;
 
-        // --- Mouse Interaction Physics ---
         if (mouse.x !== null && mouse.y !== null) {
-          let dx = mouse.x - this.x;
-          let dy = mouse.y - this.y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
           
           if (distance < mouse.radius) {
-            // Ensure distance is not zero or too small
             const effectiveDistance = Math.max(distance, interactionSettings.minDistance);
+            const forceDirectionX = dx / effectiveDistance;
+            const forceDirectionY = dy / effectiveDistance;
+            const forceMagnitude = (mouse.radius - effectiveDistance) / mouse.radius * interactionSettings.forceStrength * this.density;
             
-            // Force direction (unit vector)
-            let forceDirectionX = dx / effectiveDistance;
-            let forceDirectionY = dy / effectiveDistance;
-            
-            // Force magnitude (stronger when closer)
-            let forceMagnitude = (mouse.radius - effectiveDistance) / mouse.radius * interactionSettings.forceStrength * this.density;
-            
-            let forceX = forceDirectionX * forceMagnitude;
-            let forceY = forceDirectionY * forceMagnitude;
-            
-            if (interactionSettings.interactionMode === 'repel') {
-              this.vx -= forceX;
-              this.vy -= forceY;
-            } else if (interactionSettings.interactionMode === 'attract') {
-              this.vx += forceX;
-              this.vy += forceY;
-            }
+            this.vx -= forceDirectionX * forceMagnitude;
+            this.vy -= forceDirectionY * forceMagnitude;
           }
         }
         
-        // --- Apply Friction ---
         this.vx *= interactionSettings.friction;
         this.vy *= interactionSettings.friction;
         
-        // --- Update Position ---
         this.x += this.vx;
         this.y += this.vy;
         
-        // --- Boundary Handling (Wrap around edges) ---
         if (canvas) {
           if (this.x > canvas.width + this.size) this.x = -this.size;
           else if (this.x < -this.size) this.x = canvas.width + this.size;
@@ -131,20 +113,65 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
         }
       }
       
-      // Draw particle
       draw() {
         if (!ctx) return;
+        ctx.globalAlpha = this.alpha;
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.closePath();
         ctx.fill();
+        ctx.globalAlpha = 1;
       }
     }
     
-    // Initialize particles
+    function drawConnections() {
+      if (!ctx) return;
+      const len = particlesArray.length;
+      const cd = connectionDistance;
+      
+      for (let i = 0; i < len; i++) {
+        const pi = particlesArray[i];
+        for (let j = i + 1; j < len; j++) {
+          const pj = particlesArray[j];
+          const dx = pi.x - pj.x;
+          if (dx > cd || dx < -cd) continue;
+          const dy = pi.y - pj.y;
+          if (dy > cd || dy < -cd) continue;
+          
+          const distSq = dx * dx + dy * dy;
+          if (distSq > connectionDistanceSq) continue;
+          
+          const distance = Math.sqrt(distSq);
+          let opacity = (1 - distance / cd) * 0.10;
+          let lineWidth = 0.3;
+          
+          if (mouse.x !== null && mouse.y !== null) {
+            const midX = (pi.x + pj.x) * 0.5;
+            const midY = (pi.y + pj.y) * 0.5;
+            const mdx = midX - mouse.x;
+            const mdy = midY - mouse.y;
+            const mouseDist = Math.sqrt(mdx * mdx + mdy * mdy);
+            
+            if (mouseDist < mouseConnectionBoost) {
+              const boost = 1 - mouseDist / mouseConnectionBoost;
+              opacity += boost * 0.25;
+              lineWidth = 0.3 + boost * 0.8;
+            }
+          }
+          
+          ctx.strokeStyle = `hsla(47, 80%, 50%, ${opacity})`;
+          ctx.lineWidth = lineWidth;
+          ctx.beginPath();
+          ctx.moveTo(pi.x, pi.y);
+          ctx.lineTo(pj.x, pj.y);
+          ctx.stroke();
+        }
+      }
+    }
+    
     function init() {
-      resizeCanvas(); // Set initial size
+      resizeCanvas();
       particlesArray = [];
       if (!canvas) return;
       
@@ -153,29 +180,29 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
       }
     }
     
-    // Animation loop
     function animate() {
       if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas each frame
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      drawConnections();
       
       for (let i = 0; i < particlesArray.length; i++) {
         particlesArray[i].update();
         particlesArray[i].draw();
       }
       
-      requestAnimationFrame(animate); // Loop
+      animationId = requestAnimationFrame(animate);
     }
     
-    // Update mouse/touch coordinates
     function handleMouseMove(event: MouseEvent) {
-      if (!canvas || isMobile) return; // Disable mouse interaction on mobile
+      if (!canvas || isMobile) return;
       const rect = canvas.getBoundingClientRect();
       mouse.x = event.clientX - rect.left;
       mouse.y = event.clientY - rect.top;
     }
     
     function handleTouchMove(event: TouchEvent) {
-      if (!canvas || !isMobile) return; // Only handle touch on mobile
+      if (!canvas || !isMobile) return;
       event.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const touch = event.touches[0];
@@ -186,27 +213,19 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
     }
     
     function handleTouchEnd() {
-      if (isMobile) {
-        mouse.x = null;
-        mouse.y = null;
-      }
+      if (isMobile) { mouse.x = null; mouse.y = null; }
     }
     
     function handleMouseOut() {
-      if (!isMobile) {
-        mouse.x = null;
-        mouse.y = null;
-      }
+      if (!isMobile) { mouse.x = null; mouse.y = null; }
     }
     
-    // Handle window resize
     function resizeCanvas() {
       if (!canvas || !container) return;
       canvas.width = container.clientWidth;
       canvas.height = container.clientHeight;
     }
     
-    // Add event listeners - optimized for mobile/desktop
     if (!isMobile) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseout', handleMouseOut);
@@ -217,12 +236,11 @@ const ParticleHero: React.FC<ParticleHeroProps> = ({ className }) => {
     }
     window.addEventListener('resize', resizeCanvas);
     
-    // Start the particle system
     init();
     animate();
     
-    // Clean up on unmount
     return () => {
+      cancelAnimationFrame(animationId);
       if (!isMobile) {
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('mouseout', handleMouseOut);
