@@ -151,19 +151,6 @@ const CVSection: React.FC<CVSectionProps> = ({ isSummary = false }) => {
             </div>
             <p className="text-primary/80 font-medium mb-2">Affiliated to Tribhuvan University</p>
             <p className="text-foreground font-medium mb-2">Bachelor of Science in Physics</p>
-            <p className="text-muted-foreground text-sm">
-              Average percentage: 68.50 (CGPA: 3.54/4.00 
-              <a 
-                href="/converted gpa.pdf" 
-                download="GPA_Conversion_MaheshKNeupane.pdf"
-                className="text-primary font-semibold hover:underline cursor-pointer ml-1 inline-flex items-center"
-                title="Click to download GPA conversion document"
-              >
-                <Download className="w-3 h-3 mr-1" />
-                Alpha Grade conversion
-              </a>
-              )
-            </p>
           </div>
         </div>
 
