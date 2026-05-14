@@ -19,6 +19,7 @@ import ActivityPage from "./pages/ActivityPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ResearchPage from "./pages/ResearchPage";
 import CertificationsPage from "./pages/CertificationsPage";
+import VideoPortfolioPage from "./pages/VideoPortfolioPage";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => {
             <Route path="/extracurricular/:id" element={<ActivityPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/video" element={<VideoPortfolioPage />} />
             <Route path="/research" element={<ResearchPage />} />
             <Route path="/certifications" element={<CertificationsPage />} />
             <Route path="*" element={<NotFound />} />

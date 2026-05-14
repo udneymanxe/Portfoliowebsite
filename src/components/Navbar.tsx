@@ -21,13 +21,14 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Home', 'About', 'CV', 'Projects', 'Research', 'Certifications', 'Blog', 'Extracurricular', 'Contact'];
+  const navItems = ['Home', 'About', 'CV', 'Projects', 'Video', 'Research', 'Certifications', 'Blog', 'Extracurricular', 'Contact'];
 
   const getNavItemHref = (item: string) => {
     const lowercaseItem = item.toLowerCase();
     if (item === 'Home') return '/';
     if (item === 'About') return '/about';
     if (item === 'Projects') return '/projects';
+    if (item === 'Video') return '/video';
     if (item === 'Research') return '/research';
     if (item === 'Certifications') return '/certifications';
     if (item === 'CV') return '/cv';
