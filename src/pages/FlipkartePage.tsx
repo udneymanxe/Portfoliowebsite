@@ -9,6 +9,9 @@ import { flipkarteDb, type FlipkarteCard } from "@/lib/flipkarteDb";
 import "@/styles/flipkarte.css";
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
+const ADMIN_PIN = "98633";
+const RECOMMENDED_IMAGE_KB = 300;
+const MAX_IMAGE_KB = 800;
 
 function shuffleArray<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -42,6 +45,8 @@ const FlipkartePage: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
+  const [adminUnlocked, setAdminUnlocked] = useState(false);
+  const [pinInput, setPinInput] = useState("");
   const [toast, setToast] = useState<string | null>(null);
   const [dueCount, setDueCount] = useState(0);
   const [nextReviewText, setNextReviewText] = useState("");
@@ -271,6 +276,8 @@ const FlipkartePage: React.FC = () => {
   const openAdmin = () => setAdminOpen(true);
   const closeAdmin = () => {
     setAdminOpen(false);
+    setAdminUnlocked(false);
+    setPinInput("");
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return null;
@@ -283,11 +290,27 @@ const FlipkartePage: React.FC = () => {
 
   const onImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (file && file.size > MAX_IMAGE_KB * 1024) {
+      selectedImageFile.current = null;
+      if (imageFileRef.current) imageFileRef.current.value = "";
+      showToast(`❌ Max image size is ${MAX_IMAGE_KB}KB`);
+      return;
+    }
     selectedImageFile.current = file ?? null;
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return file ? URL.createObjectURL(file) : null;
     });
+  };
+
+  const unlockAdmin = () => {
+    if (pinInput === ADMIN_PIN) {
+      setAdminUnlocked(true);
+      setPinInput("");
+      showToast("🔓 Upload unlocked");
+    } else {
+      showToast("❌ Wrong PIN");
+    }
   };
 
   const saveCard = async () => {
@@ -379,6 +402,20 @@ const FlipkartePage: React.FC = () => {
       showToast("❌ Import failed");
     }
     e.target.value = "";
+  };
+
+  const deleteCurrentCard = async () => {
+    const c = deck[index];
+    if (!c?.id) return;
+    const ok = window.confirm(
+      `Delete card "${c.german_text}" (${c.english_text})? This cannot be undone.`,
+    );
+    if (!ok) return;
+
+    await flipkarteDb.flashcards.delete(c.id);
+    showToast("🗑️ Card deleted");
+    resetVisual();
+    void loadDeck(level);
   };
 
   const empty = !card;
@@ -602,63 +639,102 @@ const FlipkartePage: React.FC = () => {
           <div className="flipkarte-font-display mb-4 text-2xl tracking-[0.05em] text-[#c9f241]">
             NEW CARD
           </div>
-          <div className="mb-2.5 grid grid-cols-2 gap-2.5">
-            <input
-              className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
-              placeholder="🇩🇪 German word"
-              value={germanInput}
-              onChange={(e) => setGermanInput(e.target.value)}
-            />
-            <input
-              className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
-              placeholder="🇬🇧 English"
-              value={englishInput}
-              onChange={(e) => setEnglishInput(e.target.value)}
-            />
-          </div>
-          <label
-            htmlFor="fk-image-file"
-            className="mb-3.5 flex cursor-pointer items-center gap-2.5 rounded-xl border-[1.5px] border-dashed border-[#252a38] bg-[#181c25] px-3.5 py-3 transition-colors hover:border-[#c9f241]"
-          >
-            <svg width={20} height={20} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span className="text-[13px] font-semibold text-[#6b7485]">
-              <strong className="text-[#c9f241]">Choose image</strong> — JPG, PNG, WEBP
-            </span>
-          </label>
-          <input
-            id="fk-image-file"
-            ref={imageFileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={onImagePick}
-          />
-          {previewUrl ? (
-            <div className="mb-3.5 max-h-[140px] overflow-hidden rounded-xl">
-              <img src={previewUrl} alt="" className="h-[140px] w-full object-cover" />
+          {!adminUnlocked ? (
+            <div className="mb-3 space-y-3">
+              <p className="text-sm text-[#6b7485]">
+                Enter PIN to unlock uploads.
+              </p>
+              <input
+                type="password"
+                inputMode="numeric"
+                maxLength={5}
+                className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
+                placeholder="Enter PIN"
+                value={pinInput}
+                onChange={(e) => setPinInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && unlockAdmin()}
+              />
+              <div className="flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={unlockAdmin}
+                  className="flipkarte-font-display flex-1 cursor-pointer rounded-2xl border-none bg-[#c9f241] py-3.5 text-[18px] tracking-[0.06em] text-[#0b0d11]"
+                >
+                  UNLOCK
+                </button>
+                <button
+                  type="button"
+                  onClick={closeAdmin}
+                  className="cursor-pointer rounded-2xl border-[1.5px] border-[#252a38] bg-[#181c25] px-5 py-3.5 text-sm font-bold text-[#6b7485]"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          ) : null}
-          <div className="mb-3 flex gap-2.5">
-            <button
-              type="button"
-              disabled={saving}
-              onClick={() => void saveCard()}
-              className="flipkarte-font-display flex-1 cursor-pointer rounded-2xl border-none bg-[#c9f241] py-3.5 text-[18px] tracking-[0.06em] text-[#0b0d11] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {saving ? "Saving…" : "SAVE CARD"}
-            </button>
-            <button
-              type="button"
-              onClick={closeAdmin}
-              className="cursor-pointer rounded-2xl border-[1.5px] border-[#252a38] bg-[#181c25] px-5 py-3.5 text-sm font-bold text-[#6b7485]"
-            >
-              Cancel
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="mb-2.5 grid grid-cols-2 gap-2.5">
+                <input
+                  className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
+                  placeholder="🇩🇪 German word"
+                  value={germanInput}
+                  onChange={(e) => setGermanInput(e.target.value)}
+                />
+                <input
+                  className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
+                  placeholder="🇬🇧 English"
+                  value={englishInput}
+                  onChange={(e) => setEnglishInput(e.target.value)}
+                />
+              </div>
+              <p className="mb-2 text-xs text-[#6b7485]">
+                Recommended: up to {RECOMMENDED_IMAGE_KB}KB. Hard limit: {MAX_IMAGE_KB}KB.
+              </p>
+              <label
+                htmlFor="fk-image-file"
+                className="mb-3.5 flex cursor-pointer items-center gap-2.5 rounded-xl border-[1.5px] border-dashed border-[#252a38] bg-[#181c25] px-3.5 py-3 transition-colors hover:border-[#c9f241]"
+              >
+                <svg width={20} height={20} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                <span className="text-[13px] font-semibold text-[#6b7485]">
+                  <strong className="text-[#c9f241]">Choose image</strong> — JPG, PNG, WEBP
+                </span>
+              </label>
+              <input
+                id="fk-image-file"
+                ref={imageFileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={onImagePick}
+              />
+              {previewUrl ? (
+                <div className="mb-3.5 max-h-[140px] overflow-hidden rounded-xl">
+                  <img src={previewUrl} alt="" className="h-[140px] w-full object-cover" />
+                </div>
+              ) : null}
+              <div className="mb-3 flex gap-2.5">
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => void saveCard()}
+                  className="flipkarte-font-display flex-1 cursor-pointer rounded-2xl border-none bg-[#c9f241] py-3.5 text-[18px] tracking-[0.06em] text-[#0b0d11] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {saving ? "Saving…" : "SAVE CARD"}
+                </button>
+                <button
+                  type="button"
+                  onClick={closeAdmin}
+                  className="cursor-pointer rounded-2xl border-[1.5px] border-[#252a38] bg-[#181c25] px-5 py-3.5 text-sm font-bold text-[#6b7485]"
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
           <div className="mt-2.5 flex gap-2 border-t border-[#252a38] pt-3.5">
             <button
               type="button"
@@ -681,6 +757,16 @@ const FlipkartePage: React.FC = () => {
               className="hidden"
               onChange={(e) => void importJson(e)}
             />
+          </div>
+          <div className="mt-2 flex gap-2">
+            <button
+              type="button"
+              disabled={!card}
+              onClick={() => void deleteCurrentCard()}
+              className="w-full cursor-pointer rounded-[10px] border-[1.5px] border-[#5c2020] bg-[#3a1515] py-2.5 text-xs font-bold uppercase tracking-wide text-[#ff4d4d] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              🗑 Delete Current Card
+            </button>
           </div>
         </div>
       </div>
