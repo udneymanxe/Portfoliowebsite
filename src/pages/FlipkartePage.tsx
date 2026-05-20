@@ -13,6 +13,10 @@ const ADMIN_PIN = "98633";
 const RECOMMENDED_IMAGE_KB = 300;
 const MAX_IMAGE_KB = 800;
 
+type BackupCard = Omit<FlipkarteCard, "imageBlob"> & {
+  imageDataUrl?: string | null;
+};
+
 function shuffleArray<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -47,6 +51,8 @@ const FlipkartePage: React.FC = () => {
   const [adminOpen, setAdminOpen] = useState(false);
   const [adminUnlocked, setAdminUnlocked] = useState(false);
   const [pinInput, setPinInput] = useState("");
+  const [showSavedCards, setShowSavedCards] = useState(false);
+  const [savedCards, setSavedCards] = useState<FlipkarteCard[]>([]);
   const [toast, setToast] = useState<string | null>(null);
   const [dueCount, setDueCount] = useState(0);
   const [nextReviewText, setNextReviewText] = useState("");
@@ -63,6 +69,7 @@ const FlipkartePage: React.FC = () => {
 
   const imageFileRef = useRef<HTMLInputElement>(null);
   const importFileRef = useRef<HTMLInputElement>(null);
+  const backupImportFileRef = useRef<HTMLInputElement>(null);
   const cardImageRef = useRef<HTMLImageElement>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const selectedImageFile = useRef<File | null>(null);
@@ -288,6 +295,11 @@ const FlipkartePage: React.FC = () => {
     if (imageFileRef.current) imageFileRef.current.value = "";
   };
 
+  const loadSavedCards = useCallback(async () => {
+    const rows = await flipkarteDb.flashcards.orderBy("id").reverse().toArray();
+    setSavedCards(rows);
+  }, []);
+
   const onImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.size > MAX_IMAGE_KB * 1024) {
@@ -352,6 +364,7 @@ const FlipkartePage: React.FC = () => {
       showToast("🎉 Card saved!");
       closeAdmin();
       void loadDeck(level);
+      void loadSavedCards();
     } catch (err) {
       console.error(err);
       showToast("❌ Error saving card");
@@ -372,6 +385,38 @@ const FlipkartePage: React.FC = () => {
     a.click();
     URL.revokeObjectURL(a.href);
     showToast(`⬆ Exported ${data.length} cards`);
+  };
+
+  const blobToDataUrl = (blob: Blob) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+
+  const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
+    const res = await fetch(dataUrl);
+    return await res.blob();
+  };
+
+  const exportBackupWithPhotos = async () => {
+    const all = await flipkarteDb.flashcards.toArray();
+    const payload: BackupCard[] = await Promise.all(
+      all.map(async ({ imageBlob, ...rest }) => ({
+        ...rest,
+        imageDataUrl: imageBlob ? await blobToDataUrl(imageBlob) : null,
+      })),
+    );
+    const blob = new Blob([JSON.stringify(payload)], {
+      type: "application/json",
+    });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `flipkarte_backup_with_photos_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast(`📦 Backup exported (${payload.length} cards + photos)`);
   };
 
   const importJson = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -404,6 +449,47 @@ const FlipkartePage: React.FC = () => {
     e.target.value = "";
   };
 
+  const importBackupWithPhotos = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const cards = JSON.parse(text) as BackupCard[];
+      let count = 0;
+      for (const c of cards) {
+        const exists = await flipkarteDb.flashcards
+          .where("level")
+          .equals(c.level)
+          .filter((x) => x.german_text === c.german_text)
+          .first();
+        if (!exists) {
+          const imageBlob = c.imageDataUrl
+            ? await dataUrlToBlob(c.imageDataUrl)
+            : null;
+          await flipkarteDb.flashcards.add({
+            level: c.level,
+            german_text: c.german_text,
+            english_text: c.english_text,
+            imageBlob,
+            reps: c.reps ?? 0,
+            interval: c.interval ?? 1,
+            efactor: c.efactor ?? 2.5,
+            next_review: c.next_review || Date.now(),
+          });
+          count++;
+        }
+      }
+      showToast(`📥 Backup imported (${count} cards with photos)`);
+      void loadDeck(level);
+      void loadSavedCards();
+    } catch {
+      showToast("❌ Backup import failed");
+    }
+    e.target.value = "";
+  };
+
   const deleteCurrentCard = async () => {
     const c = deck[index];
     if (!c?.id) return;
@@ -416,24 +502,43 @@ const FlipkartePage: React.FC = () => {
     showToast("🗑️ Card deleted");
     resetVisual();
     void loadDeck(level);
+    void loadSavedCards();
   };
+
+  const deleteSavedCard = async (cardId?: number, germanWord?: string) => {
+    if (!cardId) return;
+    const ok = window.confirm(
+      `Delete "${germanWord ?? "this card"}"? This cannot be undone.`,
+    );
+    if (!ok) return;
+    await flipkarteDb.flashcards.delete(cardId);
+    setSavedCards((prev) => prev.filter((c) => c.id !== cardId));
+    showToast("🗑️ Card deleted");
+    void loadDeck(level);
+  };
+
+  useEffect(() => {
+    if (adminOpen && showSavedCards) {
+      void loadSavedCards();
+    }
+  }, [adminOpen, showSavedCards, loadSavedCards]);
 
   const empty = !card;
   const maxDots = Math.min(deck.length, 7);
   const dotActive = Math.min(index, Math.max(0, maxDots - 1));
 
   return (
-    <div className="flipkarte-page fk-grain min-h-screen bg-[#0b0d11] text-[#f0f2f5] overflow-x-hidden">
+    <div className="flipkarte-page fk-grain min-h-screen bg-black text-foreground overflow-x-hidden">
       <Navbar />
       <div className="mx-auto flex max-w-[480px] flex-col h-[calc(100dvh-4.5rem)] sm:h-[calc(100dvh-5rem)] pt-[4.5rem] sm:pt-20 relative z-10 overflow-hidden">
         {/* Header */}
-        <header className="flex shrink-0 items-center justify-between border-b border-[#252a38] bg-[#13161d] px-5 py-3.5">
-          <div className="flipkarte-font-display text-[28px] leading-none tracking-[0.06em] text-[#c9f241]">
-            FLIP<span className="text-[#f0f2f5]/45">KARTE</span>
+        <header className="flex shrink-0 items-center justify-between border-b border-primary/20 bg-black/80 px-5 py-3.5">
+          <div className="flipkarte-font-display text-[28px] leading-none tracking-[0.06em] text-primary">
+            FLIP<span className="text-foreground/45">KARTE</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flipkarte-font-display rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3 py-1.5 text-[15px] tracking-[0.04em] text-[#6b7485]">
-              <span className="text-[#c9f241]">{dueCount}</span> due
+            <div className="flipkarte-font-display rounded-xl border-[1.5px] border-primary/20 bg-card px-3 py-1.5 text-[15px] tracking-[0.04em] text-muted-foreground">
+              <span className="text-primary">{dueCount}</span> due
             </div>
             <select
               value={level}
@@ -442,7 +547,7 @@ const FlipkartePage: React.FC = () => {
                 resetVisual();
                 void loadDeck(e.target.value);
               }}
-              className="flipkarte-font-display cursor-pointer appearance-none rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] py-1.5 pl-3.5 pr-3 text-[17px] tracking-[0.05em] text-[#f0f2f5] outline-none transition-colors focus:border-[#c9f241]"
+              className="flipkarte-font-display cursor-pointer appearance-none rounded-xl border-[1.5px] border-primary/20 bg-card py-1.5 pl-3.5 pr-3 text-[17px] tracking-[0.05em] text-foreground outline-none transition-colors focus:border-primary"
             >
               {LEVELS.map((l) => (
                 <option key={l} value={l}>
@@ -453,16 +558,16 @@ const FlipkartePage: React.FC = () => {
             <button
               type="button"
               onClick={openAdmin}
-              className="flipkarte-font-display shrink-0 cursor-pointer rounded-xl border-none bg-[#c9f241] px-4 py-1.5 text-[18px] tracking-[0.05em] text-[#0b0d11] transition-transform active:scale-95"
+              className="flipkarte-font-display shrink-0 cursor-pointer rounded-xl border-none bg-primary px-4 py-1.5 text-[18px] tracking-[0.05em] text-primary-foreground transition-transform active:scale-95"
             >
               + ADD
             </button>
           </div>
         </header>
 
-        <div className="h-[3px] shrink-0 overflow-hidden bg-[#252a38]">
+        <div className="h-[3px] shrink-0 overflow-hidden bg-primary/20">
           <div
-            className="h-full bg-gradient-to-r from-[#3d8bff] to-[#c9f241] transition-[width] duration-500 ease-out"
+            className="h-full bg-gradient-to-r from-primary/70 to-primary transition-[width] duration-500 ease-out"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -474,18 +579,18 @@ const FlipkartePage: React.FC = () => {
           />
 
           {empty ? (
-            <div className="fk-animate-fadeUp flex max-w-[320px] flex-col items-center gap-3 rounded-3xl border-[1.5px] border-[#252a38] bg-[#13161d] px-7 py-9 text-center">
+            <div className="fk-animate-fadeUp flex max-w-[320px] flex-col items-center gap-3 rounded-3xl border-[1.5px] border-primary/20 bg-card px-7 py-9 text-center">
               <div className="text-5xl">🎉</div>
-              <h2 className="flipkarte-font-display text-[28px] tracking-[0.05em] text-[#c9f241]">
+              <h2 className="flipkarte-font-display text-[28px] tracking-[0.05em] text-primary">
                 ALLES SUPER
               </h2>
-              <p className="text-sm leading-relaxed text-[#6b7485]">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 No cards are due for review right now in this level.
               </p>
-              <p className="text-xs font-semibold text-[#3d8bff]">
+              <p className="text-xs font-semibold text-primary/80">
                 {nextReviewText}
               </p>
-              <p className="mt-1 text-xs text-[#6b7485]">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Add more cards or choose another level.
               </p>
             </div>
@@ -500,12 +605,12 @@ const FlipkartePage: React.FC = () => {
                   onClick={handleFlip}
                   aria-label={flipped ? "Answer side" : "Tap to reveal answer"}
                 >
-                  <div className="fk-face absolute inset-0 flex flex-col overflow-hidden rounded-3xl border-[1.5px] border-[#252a38] bg-[#181c25]">
+                  <div className="fk-face absolute inset-0 flex flex-col overflow-hidden rounded-3xl border-[1.5px] border-primary/20 bg-card">
                     <div className="flex items-center justify-between px-5 pt-4">
-                      <span className="flipkarte-font-display text-[13px] tracking-[0.12em] text-[#6b7485]">
+                      <span className="flipkarte-font-display text-[13px] tracking-[0.12em] text-muted-foreground">
                         VISUAL PROMPT
                       </span>
-                      <span className="flipkarte-font-display rounded-md bg-[#c9f241] px-2 py-0.5 text-[13px] tracking-[0.08em] text-[#0b0d11]">
+                      <span className="flipkarte-font-display rounded-md bg-primary px-2 py-0.5 text-[13px] tracking-[0.08em] text-primary-foreground">
                         {level}
                       </span>
                     </div>
@@ -513,29 +618,29 @@ const FlipkartePage: React.FC = () => {
                       <img
                         ref={cardImageRef}
                         alt=""
-                        className="h-full w-full max-h-full rounded-xl bg-[#13161d] object-cover"
+                        className="h-full w-full max-h-full rounded-xl bg-black object-cover"
                       />
                     </div>
                     <div className="flex items-center justify-center gap-2 py-3.5">
-                      <span className="fk-tap-dot h-1.5 w-1.5 rounded-full bg-[#c9f241]" />
-                      <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b7485]">
+                      <span className="fk-tap-dot h-1.5 w-1.5 rounded-full bg-primary" />
+                      <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                         Tap to reveal
                       </span>
                       <span
-                        className="fk-tap-dot h-1.5 w-1.5 rounded-full bg-[#c9f241]"
+                        className="fk-tap-dot h-1.5 w-1.5 rounded-full bg-primary"
                         style={{ animationDelay: "0.3s" }}
                       />
                     </div>
                   </div>
 
-                  <div className="fk-face fk-face-back absolute inset-0 flex flex-col overflow-hidden rounded-3xl border-2 border-[#c9f241] bg-[#181c25]">
+                  <div className="fk-face fk-face-back absolute inset-0 flex flex-col overflow-hidden rounded-3xl border-2 border-primary bg-card">
                     <div className="flex items-center justify-between px-5 pt-4">
-                      <span className="flipkarte-font-display text-[13px] tracking-[0.12em] text-[#c9f241]">
+                      <span className="flipkarte-font-display text-[13px] tracking-[0.12em] text-primary">
                         ANTWORT
                       </span>
                       <button
                         type="button"
-                        className={`flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full border-none bg-[#c9f241] text-[#0b0d11] transition-transform active:scale-90 ${speaking ? "fk-tts-speaking" : ""}`}
+                        className={`flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full border-none bg-primary text-primary-foreground transition-transform active:scale-90 ${speaking ? "fk-tts-speaking" : ""}`}
                         title="Replay pronunciation"
                         aria-label="Speak German word"
                         onClick={(e) => {
@@ -561,16 +666,16 @@ const FlipkartePage: React.FC = () => {
                       </button>
                     </div>
                     <div className="flex flex-1 flex-col items-center justify-center gap-2.5 px-6 py-5 text-center">
-                      <div className="flipkarte-font-display break-words text-[clamp(32px,9vw,48px)] leading-tight tracking-[0.04em] text-[#f0f2f5]">
+                      <div className="flipkarte-font-display break-words text-[clamp(32px,9vw,48px)] leading-tight tracking-[0.04em] text-foreground">
                         {card.german_text || "—"}
                       </div>
-                      <div className="h-0.5 w-10 rounded-sm bg-[#252a38]" />
-                      <div className="break-words text-[17px] font-semibold text-[#6b7485]">
+                      <div className="h-0.5 w-10 rounded-sm bg-primary/20" />
+                      <div className="break-words text-[17px] font-semibold text-muted-foreground">
                         {card.english_text || "—"}
                       </div>
                     </div>
                     <div className="flex justify-center py-3.5">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7485]">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                         {audioHint}
                       </span>
                     </div>
@@ -582,7 +687,7 @@ const FlipkartePage: React.FC = () => {
                 {Array.from({ length: maxDots }).map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1.5 w-1.5 rounded-full transition-colors ${i === dotActive ? "bg-[#c9f241]" : "bg-[#252a38]"}`}
+                    className={`h-1.5 w-1.5 rounded-full transition-colors ${i === dotActive ? "bg-primary" : "bg-primary/20"}`}
                   />
                 ))}
               </div>
@@ -590,10 +695,10 @@ const FlipkartePage: React.FC = () => {
           )}
         </main>
 
-        <footer className="shrink-0 border-t-[1.5px] border-[#252a38] bg-[#13161d] px-4 pb-4 pt-3">
+        <footer className="shrink-0 border-t-[1.5px] border-primary/20 bg-black/80 px-4 pb-4 pt-3">
           {flipped && card ? (
             <div>
-              <p className="mb-2.5 text-center text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#6b7485]">
+              <p className="mb-2.5 text-center text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
                 How well did you know this?
               </p>
               <div className="grid grid-cols-4 gap-2">
@@ -601,8 +706,8 @@ const FlipkartePage: React.FC = () => {
                   [
                     { q: 1, cls: "bg-[#3a1515] text-[#ff4d4d] border-[#5c2020]", em: "😵", t: "FORGOT", s: "Again" },
                     { q: 3, cls: "bg-[#2e2310] text-[#ffb020] border-[#4a3818]", em: "😓", t: "HARD", s: "+1 day" },
-                    { q: 4, cls: "bg-[#101c35] text-[#3d8bff] border-[#1a3060]", em: "🙂", t: "GOOD", s: "Normal" },
-                    { q: 5, cls: "bg-[#1a2210] text-[#c9f241] border-[#2d3e18]", em: "😎", t: "EASY", s: "Boost" },
+                    { q: 4, cls: "bg-primary/15 text-primary border-primary/35", em: "🙂", t: "GOOD", s: "Normal" },
+                    { q: 5, cls: "bg-primary/20 text-primary border-primary/45", em: "😎", t: "EASY", s: "Boost" },
                   ] as const
                 ).map((b) => (
                   <button
@@ -626,29 +731,67 @@ const FlipkartePage: React.FC = () => {
 
       {/* Admin drawer */}
       <div
-        className={`fixed inset-0 z-[100] flex items-end justify-center bg-[#0b0d11]/88 backdrop-blur-sm transition-opacity ${adminOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-[100] flex items-end justify-center bg-black/88 backdrop-blur-sm transition-opacity ${adminOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
         onClick={(e) => e.target === e.currentTarget && closeAdmin()}
         role="presentation"
       >
         <div
-          className={`w-full max-w-[480px] max-h-[90dvh] overflow-y-auto rounded-t-3xl border-t-[1.5px] border-[#252a38] bg-[#13161d] px-5 pb-6 pt-6 transition-transform duration-300 ease-out ${adminOpen ? "translate-y-0" : "translate-y-full"}`}
+          className={`w-full max-w-[480px] max-h-[90dvh] overflow-y-auto rounded-t-3xl border-t-[1.5px] border-primary/20 bg-card px-5 pb-6 pt-6 transition-transform duration-300 ease-out ${adminOpen ? "translate-y-0" : "translate-y-full"}`}
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="mx-auto mb-5 h-1 w-9 rounded-sm bg-[#252a38]" />
-          <div className="flipkarte-font-display mb-4 text-2xl tracking-[0.05em] text-[#c9f241]">
+          <div className="mx-auto mb-5 h-1 w-9 rounded-sm bg-primary/20" />
+          <div className="flipkarte-font-display mb-4 text-2xl tracking-[0.05em] text-primary">
             NEW CARD
           </div>
+          <button
+            type="button"
+            onClick={() => setShowSavedCards((v) => !v)}
+            className="mb-3 w-full cursor-pointer rounded-xl border border-primary/25 bg-black/20 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
+          >
+            {showSavedCards ? "Hide saved cards" : "View all saved cards"}
+          </button>
+          {showSavedCards ? (
+            <div className="mb-4 max-h-56 overflow-y-auto rounded-xl border border-primary/20 bg-black/20 p-2">
+              {savedCards.length === 0 ? (
+                <p className="px-2 py-3 text-sm text-muted-foreground">No cards saved yet.</p>
+              ) : (
+                savedCards.map((saved) => (
+                  <div
+                    key={saved.id}
+                    className="mb-2 flex items-start justify-between rounded-lg border border-primary/15 bg-card px-3 py-2"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-foreground">
+                        {saved.german_text} - {saved.english_text}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {saved.level} | Next:{" "}
+                        {new Date(saved.next_review || Date.now()).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => void deleteSavedCard(saved.id, saved.german_text)}
+                      className="ml-3 shrink-0 rounded-md border border-[#5c2020] bg-[#3a1515] px-2 py-1 text-xs font-bold text-[#ff4d4d]"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : null}
           {!adminUnlocked ? (
             <div className="mb-3 space-y-3">
-              <p className="text-sm text-[#6b7485]">
+              <p className="text-sm text-muted-foreground">
                 Enter PIN to unlock uploads.
               </p>
               <input
                 type="password"
                 inputMode="numeric"
                 maxLength={5}
-                className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
+                className="w-full rounded-xl border-[1.5px] border-primary/20 bg-black/20 px-3.5 py-3 text-sm font-semibold text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
                 placeholder="Enter PIN"
                 value={pinInput}
                 onChange={(e) => setPinInput(e.target.value)}
@@ -658,14 +801,14 @@ const FlipkartePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={unlockAdmin}
-                  className="flipkarte-font-display flex-1 cursor-pointer rounded-2xl border-none bg-[#c9f241] py-3.5 text-[18px] tracking-[0.06em] text-[#0b0d11]"
+                  className="flipkarte-font-display flex-1 cursor-pointer rounded-2xl border-none bg-primary py-3.5 text-[18px] tracking-[0.06em] text-primary-foreground"
                 >
                   UNLOCK
                 </button>
                 <button
                   type="button"
                   onClick={closeAdmin}
-                  className="cursor-pointer rounded-2xl border-[1.5px] border-[#252a38] bg-[#181c25] px-5 py-3.5 text-sm font-bold text-[#6b7485]"
+                  className="cursor-pointer rounded-2xl border-[1.5px] border-primary/20 bg-black/20 px-5 py-3.5 text-sm font-bold text-muted-foreground"
                 >
                   Cancel
                 </button>
@@ -675,32 +818,32 @@ const FlipkartePage: React.FC = () => {
             <>
               <div className="mb-2.5 grid grid-cols-2 gap-2.5">
                 <input
-                  className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
+                  className="w-full rounded-xl border-[1.5px] border-primary/20 bg-black/20 px-3.5 py-3 text-sm font-semibold text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
                   placeholder="🇩🇪 German word"
                   value={germanInput}
                   onChange={(e) => setGermanInput(e.target.value)}
                 />
                 <input
-                  className="w-full rounded-xl border-[1.5px] border-[#252a38] bg-[#181c25] px-3.5 py-3 text-sm font-semibold text-[#f0f2f5] outline-none transition-colors placeholder:text-[#6b7485] focus:border-[#c9f241]"
+                  className="w-full rounded-xl border-[1.5px] border-primary/20 bg-black/20 px-3.5 py-3 text-sm font-semibold text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
                   placeholder="🇬🇧 English"
                   value={englishInput}
                   onChange={(e) => setEnglishInput(e.target.value)}
                 />
               </div>
-              <p className="mb-2 text-xs text-[#6b7485]">
+              <p className="mb-2 text-xs text-muted-foreground">
                 Recommended: up to {RECOMMENDED_IMAGE_KB}KB. Hard limit: {MAX_IMAGE_KB}KB.
               </p>
               <label
                 htmlFor="fk-image-file"
-                className="mb-3.5 flex cursor-pointer items-center gap-2.5 rounded-xl border-[1.5px] border-dashed border-[#252a38] bg-[#181c25] px-3.5 py-3 transition-colors hover:border-[#c9f241]"
+                className="mb-3.5 flex cursor-pointer items-center gap-2.5 rounded-xl border-[1.5px] border-dashed border-primary/25 bg-black/20 px-3.5 py-3 transition-colors hover:border-primary"
               >
                 <svg width={20} height={20} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
-                <span className="text-[13px] font-semibold text-[#6b7485]">
-                  <strong className="text-[#c9f241]">Choose image</strong> — JPG, PNG, WEBP
+                <span className="text-[13px] font-semibold text-muted-foreground">
+                  <strong className="text-primary">Choose image</strong> — JPG, PNG, WEBP
                 </span>
               </label>
               <input
@@ -721,32 +864,32 @@ const FlipkartePage: React.FC = () => {
                   type="button"
                   disabled={saving}
                   onClick={() => void saveCard()}
-                  className="flipkarte-font-display flex-1 cursor-pointer rounded-2xl border-none bg-[#c9f241] py-3.5 text-[18px] tracking-[0.06em] text-[#0b0d11] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flipkarte-font-display flex-1 cursor-pointer rounded-2xl border-none bg-primary py-3.5 text-[18px] tracking-[0.06em] text-primary-foreground transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {saving ? "Saving…" : "SAVE CARD"}
                 </button>
                 <button
                   type="button"
                   onClick={closeAdmin}
-                  className="cursor-pointer rounded-2xl border-[1.5px] border-[#252a38] bg-[#181c25] px-5 py-3.5 text-sm font-bold text-[#6b7485]"
+                  className="cursor-pointer rounded-2xl border-[1.5px] border-primary/20 bg-black/20 px-5 py-3.5 text-sm font-bold text-muted-foreground"
                 >
                   Cancel
                 </button>
               </div>
             </>
           )}
-          <div className="mt-2.5 flex gap-2 border-t border-[#252a38] pt-3.5">
+          <div className="mt-2.5 flex gap-2 border-t border-primary/20 pt-3.5">
             <button
               type="button"
               onClick={() => void exportJson()}
-              className="flex-1 cursor-pointer rounded-[10px] border-[1.5px] border-[#252a38] bg-[#181c25] py-2.5 text-xs font-bold uppercase tracking-wide text-[#6b7485] transition-colors hover:border-[#3d8bff] hover:text-[#3d8bff]"
+              className="flex-1 cursor-pointer rounded-[10px] border-[1.5px] border-primary/20 bg-black/20 py-2.5 text-xs font-bold uppercase tracking-wide text-muted-foreground transition-colors hover:border-primary hover:text-primary"
             >
               ⬆ Export JSON
             </button>
             <button
               type="button"
               onClick={() => importFileRef.current?.click()}
-              className="flex-1 cursor-pointer rounded-[10px] border-[1.5px] border-[#252a38] bg-[#181c25] py-2.5 text-xs font-bold uppercase tracking-wide text-[#6b7485] transition-colors hover:border-[#3d8bff] hover:text-[#3d8bff]"
+              className="flex-1 cursor-pointer rounded-[10px] border-[1.5px] border-primary/20 bg-black/20 py-2.5 text-xs font-bold uppercase tracking-wide text-muted-foreground transition-colors hover:border-primary hover:text-primary"
             >
               ⬇ Import JSON
             </button>
@@ -756,6 +899,29 @@ const FlipkartePage: React.FC = () => {
               accept=".json,application/json"
               className="hidden"
               onChange={(e) => void importJson(e)}
+            />
+          </div>
+          <div className="mt-2 flex gap-2">
+            <button
+              type="button"
+              onClick={() => void exportBackupWithPhotos()}
+              className="flex-1 cursor-pointer rounded-[10px] border-[1.5px] border-primary/25 bg-primary/10 py-2.5 text-xs font-bold uppercase tracking-wide text-primary transition-colors hover:bg-primary/20"
+            >
+              📦 Backup+Photos Export
+            </button>
+            <button
+              type="button"
+              onClick={() => backupImportFileRef.current?.click()}
+              className="flex-1 cursor-pointer rounded-[10px] border-[1.5px] border-primary/25 bg-primary/10 py-2.5 text-xs font-bold uppercase tracking-wide text-primary transition-colors hover:bg-primary/20"
+            >
+              📥 Backup+Photos Import
+            </button>
+            <input
+              ref={backupImportFileRef}
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={(e) => void importBackupWithPhotos(e)}
             />
           </div>
           <div className="mt-2 flex gap-2">
@@ -772,7 +938,7 @@ const FlipkartePage: React.FC = () => {
       </div>
 
       <div
-        className={`flipkarte-font-display fixed left-1/2 top-[4.5rem] z-[200] -translate-x-1/2 rounded-full bg-[#c9f241] px-5 py-2 text-[16px] tracking-[0.06em] text-[#0b0d11] transition-all duration-300 pointer-events-none whitespace-nowrap ${toast ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"}`}
+        className={`flipkarte-font-display fixed left-1/2 top-[4.5rem] z-[200] -translate-x-1/2 rounded-full bg-primary px-5 py-2 text-[16px] tracking-[0.06em] text-primary-foreground transition-all duration-300 pointer-events-none whitespace-nowrap ${toast ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"}`}
         role="status"
       >
         {toast}
