@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Karte - Flashcards</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0d0d0d; --surface:#161616; --surface2:#1e1e1e; --border:#2a2a2a; --border-hi:#3a3a3a; --accent:#c9f241; --accent-dim:rgba(201,242,65,0.12); --accent-dim2:rgba(201,242,65,0.06); --text:#f0f0f0; --text-mid:#888; --text-dim:#555; --red:#ff4d4d; --red-bg:rgba(255,77,77,0.12); --amber:#ffb020; --amber-bg:rgba(255,176,32,0.12); --green:#4dff91; --green-bg:rgba(77,255,145,0.08); --radius:18px; --card-h:min(480px, calc(100dvh - 280px)); }
+  html, body { height:100%; background:var(--bg); color:var(--text); font-family:'DM Sans', sans-serif; -webkit-font-smoothing:antialiased; overflow:hidden; }
+  #app { display:flex; flex-direction:column; height:100dvh; }
+  header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--border); background:var(--bg); flex-shrink:0; gap:10px; }
+  .logo { font-family:'DM Serif Display', serif; font-size:22px; letter-spacing:-0.02em; color:var(--accent); flex-shrink:0; }
+  .logo span { color:var(--text-dim); }
+  .header-right { display:flex; align-items:center; gap:8px; }
+  .pill { font-family:'DM Mono', monospace; font-size:12px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:5px 11px; color:var(--text-mid); white-space:nowrap; }
+  .pill strong { color:var(--accent); }
+  select.level-pick { font-family:'DM Mono', monospace; font-size:13px; background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:6px 10px; color:var(--text); cursor:pointer; outline:none; appearance:none; }
+  .btn-add { font-family:'DM Mono', monospace; font-size:12px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; background:var(--accent); color:#0d0d0d; border:none; border-radius:12px; padding:7px 14px; cursor:pointer; flex-shrink:0; transition:opacity 0.15s; }
+  .btn-add:hover { opacity:0.88; }
+  .progress-track { height:2px; background:var(--border); flex-shrink:0; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg, rgba(201,242,65,0.4), var(--accent)); transition:width 0.5s cubic-bezier(0.22,1,0.36,1); }
+  main { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 20px 8px; overflow:hidden; position:relative; }
+  .glow { position:absolute; width:320px; height:320px; border-radius:50%; pointer-events:none; transition:background 0.6s ease; top:50%; left:50%; transform:translate(-50%, -50%); filter:blur(60px); opacity:0.5; }
+  .empty-state { display:flex; flex-direction:column; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:40px 32px; text-align:center; max-width:320px; animation:fadeUp 0.4s ease; }
+  .empty-icon { font-size:44px; }
+  .empty-title { font-family:'DM Serif Display', serif; font-size:24px; color:var(--accent); letter-spacing:-0.01em; }
+  .empty-body { font-size:13px; color:var(--text-mid); line-height:1.6; }
+  .empty-hint { font-size:11px; color:var(--text-dim); font-family:'DM Mono', monospace; }
+  .card-wrap { width:100%; max-width:380px; height:var(--card-h); perspective:1200px; position:relative; }
+  .card-inner { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.55s cubic-bezier(0.22,1,0.36,1); cursor:pointer; border:none; background:none; padding:0; text-align:left; }
+  .card-inner.flipped { transform:rotateY(180deg); }
+  .card-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:var(--radius); overflow:hidden; border:1px solid var(--border); }
+  .card-front { background:var(--surface); display:flex; flex-direction:column; }
+  .card-front-label { display:flex; align-items:center; justify-content:space-between; padding:14px 16px 10px; }
+  .card-tag { font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); }
+  .level-badge { font-family:'DM Mono', monospace; font-size:11px; background:var(--accent); color:#0d0d0d; border-radius:8px; padding:3px 8px; font-weight:500; }
+  .card-image-wrap { flex:1; overflow:hidden; display:flex; align-items:center; justify-content:center; padding:0 10px; }
+  .card-image { width:100%; height:100%; object-fit:cover; border-radius:12px; display:block; }
+  .card-no-image { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--surface2); border-radius:12px; font-size:48px; color:var(--text-dim); }
+  .card-reveal-hint { padding:12px; display:flex; align-items:center; justify-content:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-dim); }
+  .tap-dot { width:5px; height:5px; border-radius:50%; background:var(--accent); animation:pulse 1.4s ease-in-out infinite; }
+  .tap-dot:nth-child(3) { animation-delay:0.3s; }
+  .card-back { transform:rotateY(180deg); background:var(--surface); border-color:var(--accent); border-width:1.5px; display:flex; flex-direction:column; }
+  .card-back-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px 10px; }
+  .card-back-label { font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); }
+  .speak-btn { width:36px; height:36px; border-radius:50%; background:var(--accent); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.15s; flex-shrink:0; }
+  .speak-btn:active { transform:scale(0.9); }
+  .speak-btn.speaking { animation:speakPulse 0.5s ease infinite alternate; }
+  .card-back-content { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:16px; text-align:center; }
+  .german-word { font-family:'DM Serif Display', serif; font-size:clamp(30px, 9vw, 46px); line-height:1.1; letter-spacing:-0.02em; color:var(--text); }
+  .word-divider { width:32px; height:1.5px; background:var(--accent); border-radius:2px; opacity:0.5; }
+  .english-word { font-size:16px; font-weight:500; color:var(--text-mid); }
+  .audio-hint { padding:10px; font-size:10px; font-family:'DM Mono', monospace; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-dim); text-align:center; }
+  .dots { display:flex; gap:5px; margin-top:10px; }
+  .dot { width:5px; height:5px; border-radius:50%; background:var(--border-hi); transition:background 0.2s; }
+  .dot.active { background:var(--accent); }
+  footer { flex-shrink:0; border-top:1px solid var(--border); background:var(--bg); padding:12px 16px; padding-bottom:max(12px, env(safe-area-inset-bottom)); }
+  .grade-hint { text-align:center; font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:9px; }
+  .grade-btns { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .grade-btn { display:flex; flex-direction:column; align-items:center; gap:2px; border:1.5px solid transparent; border-radius:14px; padding:10px 4px; cursor:pointer; transition:transform 0.12s, opacity 0.12s; font-family:'DM Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; font-weight:500; }
+  .grade-btn:active { transform:scale(0.94); }
+  .grade-btn .em { font-size:18px; line-height:1; }
+  .grade-btn .sub { font-size:9px; opacity:0.6; margin-top:1px; }
+  .grade-btn.forgot { background:var(--red-bg); color:var(--red); border-color:rgba(255,77,77,0.25); }
+  .grade-btn.hard { background:var(--amber-bg); color:var(--amber); border-color:rgba(255,176,32,0.25); }
+  .grade-btn.good { background:var(--accent-dim); color:var(--accent); border-color:rgba(201,242,65,0.25); }
+  .grade-btn.easy { background:var(--accent-dim2); color:var(--accent); border-color:rgba(201,242,65,0.35); }
+  .footer-empty { padding:8px 0 0; text-align:center; }
+  .overlay { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); display:flex; align-items:flex-end; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s; }
+  .overlay.open { opacity:1; pointer-events:auto; }
+  .sheet { width:100%; max-width:480px; max-height:92dvh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:24px 24px 0 0; padding:20px 20px max(20px, env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform 0.3s cubic-bezier(0.22,1,0.36,1); }
+  .overlay.open .sheet { transform:translateY(0); }
+  .sheet-handle { width:36px; height:3px; background:var(--border-hi); border-radius:2px; margin:0 auto 18px; }
+  .sheet-title { font-family:'DM Serif Display', serif; font-size:22px; letter-spacing:-0.01em; color:var(--accent); margin-bottom:16px; }
+  .tabs { display:flex; gap:4px; background:var(--surface2); border-radius:12px; padding:3px; margin-bottom:18px; }
+  .tab { flex:1; padding:7px; border-radius:9px; font-size:12px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; font-family:'DM Mono', monospace; cursor:pointer; border:none; background:transparent; color:var(--text-dim); transition:background 0.15s, color 0.15s; }
+  .tab.active { background:var(--surface); color:var(--text); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+  .form-row-full { margin-bottom:10px; }
+  input[type="text"], select.form-select { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:11px 14px; font-size:13px; font-family:'DM Sans', sans-serif; font-weight:500; color:var(--text); outline:none; transition:border-color 0.15s; }
+  input[type="text"]:focus, select.form-select:focus { border-color:var(--accent); }
+  input::placeholder { color:var(--text-dim); }
+  select.form-select { appearance:none; cursor:pointer; }
+  .img-label { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1.5px dashed var(--border-hi); border-radius:12px; padding:12px 14px; cursor:pointer; transition:border-color 0.15s; margin-bottom:10px; }
+  .img-label:hover { border-color:var(--accent); }
+  .img-label-text { font-size:13px; color:var(--text-mid); }
+  .img-label-text strong { color:var(--accent); }
+  .img-preview { width:100%; height:130px; object-fit:cover; border-radius:10px; margin-bottom:10px; display:block; }
+  .img-preview.hidden { display:none; }
+  .img-clear { display:none; position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,0.7); border:none; cursor:pointer; color:white; font-size:12px; align-items:center; justify-content:center; }
+  .img-preview-wrap { position:relative; margin-bottom:10px; }
+  .img-preview-wrap.has-image .img-clear { display:flex; }
+  .btn-primary { width:100%; background:var(--accent); color:#0d0d0d; border:none; border-radius:14px; padding:14px; font-size:14px; font-family:'DM Mono', monospace; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:opacity 0.15s; margin-top:4px; }
+  .btn-primary:disabled { opacity:0.4; cursor:not-allowed; }
+  .btn-primary:hover:not(:disabled) { opacity:0.88; }
+  .cards-list { display:flex; flex-direction:column; gap:8px; }
+  .saved-card { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:10px 12px; }
+  .saved-thumb { width:44px; height:44px; border-radius:8px; object-fit:cover; background:var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:20px; overflow:hidden; }
+  .saved-thumb img { width:100%; height:100%; object-fit:cover; }
+  .saved-info { flex:1; min-width:0; }
+  .saved-words { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .saved-meta { font-size:11px; color:var(--text-dim); font-family:'DM Mono', monospace; margin-top:1px; }
+  .btn-del { padding:5px 10px; border-radius:8px; background:var(--red-bg); border:1px solid rgba(255,77,77,0.2); color:var(--red); font-size:11px; font-weight:600; cursor:pointer; flex-shrink:0; }
+  .data-btns { display:flex; flex-direction:column; gap:8px; }
+  .btn-sec { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:12px 14px; font-size:13px; font-weight:500; color:var(--text-mid); cursor:pointer; text-align:left; transition:border-color 0.15s, color 0.15s; }
+  .btn-sec:hover { border-color:var(--accent); color:var(--text); }
+  .btn-sec .icon { font-size:16px; }
+  .btn-sec .label { flex:1; }
+  .btn-sec .hint { font-size:11px; color:var(--text-dim); font-family:'DM Mono', monospace; }
+  #toast { position:fixed; top:68px; left:50%; transform:translateX(-50%) translateY(-8px); background:var(--accent); color:#0d0d0d; font-family:'DM Mono', monospace; font-size:12px; font-weight:500; letter-spacing:0.04em; border-radius:20px; padding:8px 18px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.2s, transform 0.2s; z-index:999; }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  @keyframes speakPulse { from{transform:scale(1);} to{transform:scale(1.08);} }
+  @keyframes cardEnter { from{opacity:0; transform:translateY(12px) scale(0.97);} to{opacity:1; transform:none;} }
+  .card-enter { animation:cardEnter 0.35s cubic-bezier(0.22,1,0.36,1); }
+  .empty-list { text-align:center; padding:24px 0; color:var(--text-dim); font-size:13px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">Karte<span>.</span></div>
+    <div class="header-right">
+      <div class="pill"><strong id="due-count">0</strong> due</div>
+      <select class="level-pick" id="level-select"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
+      <button class="btn-add" onclick="openSheet()">+ Add</button>
+    </div>
+  </header>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <main id="main"><div class="glow" id="glow" style="background: radial-gradient(circle, rgba(201,242,65,0.08) 0%, transparent 70%)"></div><div id="card-area"></div></main>
+  <footer id="footer"><div id="footer-content"><div class="footer-empty"></div></div></footer>
+</div>
+<div class="overlay" id="overlay" onclick="if(event.target===this) closeSheet()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sheet-title">New Card</div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('add')">Add Card</button>
+      <button class="tab" onclick="switchTab('browse')">Browse</button>
+      <button class="tab" onclick="switchTab('data')">Data</button>
+    </div>
+    <div id="tab-add">
+      <div class="form-row"><input type="text" id="inp-german" placeholder="🇩🇪 German word" /><input type="text" id="inp-english" placeholder="🇬🇧 English" /></div>
+      <div class="form-row-full"><select class="form-select" id="inp-level"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select></div>
+      <label class="img-label" for="img-file-input"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="img-label-text"><strong>Choose image</strong> - JPG, PNG, WEBP (optional)</span></label>
+      <input type="file" id="img-file-input" accept="image/*" style="display:none" onchange="onImgPick(this)" />
+      <div class="img-preview-wrap" id="preview-wrap"><img class="img-preview hidden" id="img-preview" alt="" /><button class="img-clear" id="img-clear-btn" onclick="clearImage()">✕</button></div>
+      <button class="btn-primary" id="save-btn" onclick="saveCard()">Save Card</button>
+    </div>
+    <div id="tab-browse" style="display:none"><div id="browse-list" class="cards-list"><div class="empty-list">Loading…</div></div></div>
+    <div id="tab-data" style="display:none">
+      <div class="data-btns">
+        <button class="btn-sec" onclick="exportBackup()"><span class="icon">📦</span><span class="label">Export Backup <span class="hint">(with photos)</span></span></button>
+        <button class="btn-sec" onclick="document.getElementById('import-input').click()"><span class="icon">📥</span><span class="label">Import Backup <span class="hint">(with photos)</span></span></button>
+        <input type="file" id="import-input" accept=".json" style="display:none" onchange="importBackup(this)" />
+        <button class="btn-sec" onclick="exportJson()"><span class="icon">⬆️</span><span class="label">Export JSON <span class="hint">(no photos)</span></span></button>
+        <button class="btn-sec" onclick="document.getElementById('import-json-input').click()"><span class="icon">⬇️</span><span class="label">Import JSON <span class="hint">(no photos)</span></span></button>
+        <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="importJson(this)" />
+        <button class="btn-sec" style="color:var(--red); border-color:rgba(255,77,77,0.2)" onclick="deleteCurrentCard()"><span class="icon">🗑️</span><span class="label">Delete Current Card</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+const DB_NAME='karte_db'; const DB_VER=1; let db;
+function openDb(){return new Promise((res,rej)=>{const req=indexedDB.open(DB_NAME,DB_VER); req.onupgradeneeded=e=>{const d=e.target.result; if(!d.objectStoreNames.contains('cards')){const s=d.createObjectStore('cards',{keyPath:'id',autoIncrement:true}); s.createIndex('level','level',{unique:false}); s.createIndex('next_review','next_review',{unique:false});}}; req.onsuccess=e=>res(e.target.result); req.onerror=e=>rej(e.target.error);});}
+function tx(mode,cb){const t=db.transaction('cards',mode); const s=t.objectStore('cards'); return new Promise((res,rej)=>{const req=cb(s); req.onsuccess=e=>res(e.target.result); req.onerror=e=>rej(e.target.error);});}
+async function dbAdd(c){return tx('readwrite',s=>s.add(c));} async function dbPut(c){return tx('readwrite',s=>s.put(c));} async function dbDelete(id){return tx('readwrite',s=>s.delete(id));}
+function dbGetAll(){return new Promise((res,rej)=>{const t=db.transaction('cards','readonly'); const req=t.objectStore('cards').getAll(); req.onsuccess=e=>res(e.target.result); req.onerror=e=>rej(e.target.error);});}
+function dbGetByLevel(level){return new Promise((res,rej)=>{const t=db.transaction('cards','readonly'); const idx=t.objectStore('cards').index('level'); const req=idx.getAll(level); req.onsuccess=e=>res(e.target.result); req.onerror=e=>rej(e.target.error);});}
+let currentLevel='A1', deck=[], cardIndex=0, isFlipped=false, isSpeaking=false, selectedImageBlob=null, previewObjectUrl=null, currentTab='add', germanVoice=null;
+function pickVoice(){const v=window.speechSynthesis.getVoices(); germanVoice=v.find(x=>x.lang.startsWith('de')&&(x.name.includes('Google')||x.name.includes('Premium')||x.name.includes('Enhanced')))??v.find(x=>x.lang==='de-DE')??v.find(x=>x.lang.startsWith('de'))??null;}
+window.speechSynthesis.addEventListener('voiceschanged',pickVoice); pickVoice();
+function speakGerman(text){if(!text||!('speechSynthesis' in window)) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='de-DE'; u.rate=0.92; u.pitch=1; if(germanVoice) u.voice=germanVoice; u.onstart=()=>{isSpeaking=true; renderAudioHint('Playing…'); renderSpeakBtn();}; u.onend=u.onerror=()=>{isSpeaking=false; renderAudioHint('Tap 🔊 to replay'); renderSpeakBtn();}; window.speechSynthesis.speak(u);}
+function sm2Grade(card,q){let {reps=0,interval=1,efactor=2.5}=card; if(q>=3){if(reps===0)interval=1; else if(reps===1)interval=6; else interval=Math.round(interval*efactor); reps++;} else {reps=0; interval=1;} efactor=Math.max(1.3, efactor+0.1-(5-q)*(0.08+(5-q)*0.02)); return {reps,interval,efactor,next_review:Date.now()+interval*86400000};}
+function shuffle(arr){const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;}
+async function loadDeck(level){const now=Date.now(); const all=await dbGetByLevel(level); const due=all.filter(c=>(c.next_review??0)<=now); deck=shuffle(due); cardIndex=0; isFlipped=false; document.getElementById('due-count').textContent=deck.length; const upcoming=all.filter(c=>(c.next_review??0)>now).sort((a,b)=>a.next_review-b.next_review); let nextText=''; if(upcoming.length){const mins=Math.round((upcoming[0].next_review-Date.now())/60000); nextText=mins<60?`Next card due in ~${mins} min${mins!==1?'s':''}`:`Next card due in ~${Math.round(mins/60)} hr${Math.round(mins/60)!==1?'s':''}`;} renderCardArea(nextText, all.length===0); renderFooter(); renderProgress();}
+function renderProgress(){const pct=deck.length>0?(cardIndex/deck.length)*100:0; document.getElementById('progress-fill').style.width=pct+'%';}
+function renderCardArea(nextText='', isEmpty=false){const area=document.getElementById('card-area'); area.querySelectorAll('img[data-objurl]').forEach(img=>URL.revokeObjectURL(img.src)); if(deck.length===0){const msg=isEmpty?'No cards in this level yet.\nAdd some with the + Add button.':`All done for now! 🎉\n${nextText||'Add more or choose another level.'}`; area.innerHTML=`<div class="empty-state"><div class="empty-icon">${isEmpty?'📚':'🎉'}</div><div class="empty-title">${isEmpty?'No Cards Yet':'Alles super!'}</div><div class="empty-body">${msg.split('\n').join('<br>')}</div>${nextText?`<div class="empty-hint">${nextText}</div>`:''}</div>`; return;} const card=deck[cardIndex]; if(!card)return; let frontImg=''; if(card.imageBlob){const url=URL.createObjectURL(card.imageBlob); frontImg=`<img class="card-image" src="${url}" alt="" data-objurl="1" onload="URL.revokeObjectURL(this.src)" />`;} else {frontImg=`<div class="card-no-image">🖼️</div>`;} const maxDots=Math.min(deck.length,7), dotActive=Math.min(cardIndex,maxDots-1); const dots=Array.from({length:maxDots},(_,i)=>`<div class="dot ${i===dotActive?'active':''}"></div>`).join(''); area.innerHTML=`<div class="card-wrap"><button class="card-inner card-enter ${isFlipped?'flipped':''}" id="card-inner" onclick="handleFlip()" aria-label="Flip card" type="button"><div class="card-face card-front"><div class="card-front-label"><span class="card-tag">Visual Prompt</span><span class="level-badge">${card.level}</span></div><div class="card-image-wrap">${frontImg}</div><div class="card-reveal-hint"><div class="tap-dot"></div>Tap to reveal<div class="tap-dot"></div></div></div><div class="card-face card-back"><div class="card-back-header"><span class="card-back-label">Antwort</span><button class="speak-btn ${isSpeaking?'speaking':''}" id="speak-btn" onclick="event.stopPropagation(); speakGerman(deck[cardIndex].german_text)" aria-label="Pronounce" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0d0d0d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button></div><div class="card-back-content"><div class="german-word">${card.german_text||'—'}</div><div class="word-divider"></div><div class="english-word">${card.english_text||'—'}</div></div><div class="audio-hint" id="audio-hint">Pronouncing…</div></div></button></div><div class="dots">${dots}</div>`;
+  document.getElementById('glow').style.background=isFlipped?'radial-gradient(circle, rgba(61,139,255,0.08) 0%, transparent 70%)':'radial-gradient(circle, rgba(201,242,65,0.06) 0%, transparent 70%)';
+}
+function renderSpeakBtn(){const btn=document.getElementById('speak-btn'); if(btn) btn.className=`speak-btn ${isSpeaking?'speaking':''}`;}
+function renderAudioHint(text){const el=document.getElementById('audio-hint'); if(el) el.textContent=text;}
+function renderFooter(){const f=document.getElementById('footer-content'); if(!isFlipped||!deck[cardIndex]){f.innerHTML='<div class="footer-empty"></div>'; return;} f.innerHTML=`<div class="grade-hint">How well did you know this?</div><div class="grade-btns"><button class="grade-btn forgot" onclick="gradeCard(1)" type="button"><span class="em">😵</span>Forgot<span class="sub">Again</span></button><button class="grade-btn hard" onclick="gradeCard(3)" type="button"><span class="em">😓</span>Hard<span class="sub">+1 day</span></button><button class="grade-btn good" onclick="gradeCard(4)" type="button"><span class="em">🙂</span>Good<span class="sub">Normal</span></button><button class="grade-btn easy" onclick="gradeCard(5)" type="button"><span class="em">😎</span>Easy<span class="sub">Boost</span></button></div>`;}
+function handleFlip(){if(isFlipped||!deck[cardIndex])return; isFlipped=true; const i=document.getElementById('card-inner'); if(i)i.classList.add('flipped'); document.getElementById('glow').style.background='radial-gradient(circle, rgba(61,139,255,0.09) 0%, transparent 70%)'; renderFooter(); speakGerman(deck[cardIndex].german_text); setTimeout(()=>renderAudioHint('Tap 🔊 to replay'),1800);}
+async function gradeCard(q){const card=deck[cardIndex]; if(!card?.id) return; const updates=sm2Grade(card,q); await dbPut({...card,...updates}); const labels={1:'📌 See you soon',3:'📅 Scheduled +1 day',4:`📅 +${updates.interval} day${updates.interval>1?'s':''}`,5:`🚀 Boosted! ${updates.interval} days`}; showToast(labels[q]||'✓ Saved'); cardIndex++; isFlipped=false; window.speechSynthesis.cancel(); isSpeaking=false; document.getElementById('due-count').textContent=deck.length-cardIndex; renderProgress(); if(cardIndex>=deck.length) await loadDeck(currentLevel); else {renderCardArea(); renderFooter();}}
+async function deleteCurrentCard(){const card=deck[cardIndex]; if(!card?.id){showToast('⚠ No current card'); return;} if(!confirm(`Delete "${card.german_text}" (${card.english_text})?`)) return; await dbDelete(card.id); showToast('🗑️ Deleted'); await loadDeck(currentLevel); closeSheet();}
+document.addEventListener('keydown',e=>{if(document.getElementById('overlay').classList.contains('open'))return; const card=deck[cardIndex]; if((e.key===' '||e.key==='f')&&!isFlipped&&card){e.preventDefault();handleFlip();} if(e.key==='1'&&isFlipped)gradeCard(1); if(e.key==='2'&&isFlipped)gradeCard(3); if(e.key==='3'&&isFlipped)gradeCard(4); if(e.key==='4'&&isFlipped)gradeCard(5); if(e.key==='r'&&card)speakGerman(card.german_text);});
+document.getElementById('level-select').addEventListener('change',e=>{currentLevel=e.target.value; isFlipped=false; window.speechSynthesis.cancel(); loadDeck(currentLevel);});
+function openSheet(){document.getElementById('overlay').classList.add('open'); document.getElementById('inp-level').value=currentLevel; if(currentTab==='browse') renderBrowse();}
+function closeSheet(){document.getElementById('overlay').classList.remove('open');}
+function switchTab(tab){currentTab=tab; ['add','browse','data'].forEach(t=>{document.getElementById(`tab-${t}`).style.display=t===tab?'':'none';}); document.querySelectorAll('.tab').forEach((btn,i)=>btn.classList.toggle('active',['add','browse','data'][i]===tab)); if(tab==='browse') renderBrowse();}
+async function onImgPick(input){const file=input.files[0]; if(!file)return; if(file.size>2*1024*1024){showToast('❌ Image too large (max 2 MB)'); input.value=''; return;} selectedImageBlob=file; if(previewObjectUrl) URL.revokeObjectURL(previewObjectUrl); previewObjectUrl=URL.createObjectURL(file); const p=document.getElementById('img-preview'); const w=document.getElementById('preview-wrap'); p.src=previewObjectUrl; p.classList.remove('hidden'); w.classList.add('has-image');}
+function clearImage(){selectedImageBlob=null; if(previewObjectUrl){URL.revokeObjectURL(previewObjectUrl); previewObjectUrl=null;} const p=document.getElementById('img-preview'); const w=document.getElementById('preview-wrap'); p.src=''; p.classList.add('hidden'); w.classList.remove('has-image'); document.getElementById('img-file-input').value='';}
+async function saveCard(){const german=document.getElementById('inp-german').value.trim(); const english=document.getElementById('inp-english').value.trim(); const level=document.getElementById('inp-level').value; if(!german||!english){showToast('⚠ Enter both words'); return;} const btn=document.getElementById('save-btn'); btn.disabled=true; btn.textContent='Saving…'; try{await dbAdd({level,german_text:german,english_text:english,imageBlob:selectedImageBlob,reps:0,interval:1,efactor:2.5,next_review:Date.now()}); showToast('🎉 Card saved!'); document.getElementById('inp-german').value=''; document.getElementById('inp-english').value=''; clearImage(); selectedImageBlob=null; closeSheet(); if(level===currentLevel) await loadDeck(currentLevel);}catch(e){console.error(e); showToast('❌ Error saving card');} finally {btn.disabled=false; btn.textContent='Save Card';}}
+async function renderBrowse(){const list=document.getElementById('browse-list'); list.querySelectorAll('img[data-revoke]').forEach(img=>URL.revokeObjectURL(img.src)); const all=await dbGetAll(); if(!all.length){list.innerHTML='<div class="empty-list">No cards saved yet.</div>'; return;} all.sort((a,b)=>(b.id||0)-(a.id||0)); list.innerHTML=''; for(const card of all){const item=document.createElement('div'); item.className='saved-card'; const thumb=card.imageBlob?`<div class="saved-thumb"><img src="${URL.createObjectURL(card.imageBlob)}" alt="" data-revoke="1" /></div>`:`<div class="saved-thumb">🃏</div>`; const nextDate=card.next_review?new Date(card.next_review).toLocaleDateString():'—'; item.innerHTML=`${thumb}<div class="saved-info"><div class="saved-words">${escHtml(card.german_text)} — ${escHtml(card.english_text)}</div><div class="saved-meta">${card.level} · due ${nextDate}</div></div><button class="btn-del" onclick="deleteSavedCard(${card.id}, '${escHtml(card.german_text)}')">Del</button>`; list.appendChild(item);}}
+async function deleteSavedCard(id,word){if(!confirm(`Delete "${word}"?`))return; await dbDelete(id); showToast('🗑️ Deleted'); renderBrowse(); loadDeck(currentLevel);}
+function blobToDataUrl(blob){return new Promise((res,rej)=>{const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(blob);});}
+async function dataUrlToBlob(dataUrl){const r=await fetch(dataUrl); return r.blob();}
+async function exportBackup(){const all=await dbGetAll(); const payload=await Promise.all(all.map(async ({imageBlob,...rest})=>({...rest,imageDataUrl:imageBlob?await blobToDataUrl(imageBlob):null}))); download(JSON.stringify(payload),`karte_backup_${Date.now()}.json`,'application/json'); showToast(`📦 Exported ${payload.length} cards`);}
+async function importBackup(input){const file=input.files[0]; if(!file)return; try{const cards=JSON.parse(await file.text()); let count=0; for(const c of cards){await dbAdd({level:c.level,german_text:c.german_text,english_text:c.english_text,imageBlob:c.imageDataUrl?await dataUrlToBlob(c.imageDataUrl):null,reps:c.reps??0,interval:c.interval??1,efactor:c.efactor??2.5,next_review:c.next_review||Date.now()}); count++;} showToast(`📥 Imported ${count} cards`); await loadDeck(currentLevel); renderBrowse();}catch(e){console.error(e); showToast('❌ Import failed');} input.value='';}
+async function exportJson(){const all=await dbGetAll(); const data=all.map(({imageBlob:_,...rest})=>rest); download(JSON.stringify(data,null,2),`karte_export_${Date.now()}.json`,'application/json'); showToast(`⬆ Exported ${data.length} cards`);}
+async function importJson(input){const file=input.files[0]; if(!file)return; try{const cards=JSON.parse(await file.text()); let count=0; for(const c of cards){await dbAdd({level:c.level,german_text:c.german_text,english_text:c.english_text,imageBlob:null,reps:c.reps??0,interval:c.interval??1,efactor:c.efactor??2.5,next_review:c.next_review||Date.now()}); count++;} showToast(`⬇ Imported ${count} cards`); await loadDeck(currentLevel);}catch(e){showToast('❌ Import failed');} input.value='';}
+function download(content,filename,type){const b=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=filename; a.click(); URL.revokeObjectURL(a.href);}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+let toastTimer; function showToast(msg){const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2400);}
+(async ()=>{db=await openDb(); await loadDeck(currentLevel);})();
+</script>
+</body>
+</html>
