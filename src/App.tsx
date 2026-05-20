@@ -20,6 +20,7 @@ import ProjectsPage from "./pages/ProjectsPage";
 import ResearchPage from "./pages/ResearchPage";
 import CertificationsPage from "./pages/CertificationsPage";
 import VideoPortfolioPage from "./pages/VideoPortfolioPage";
+import FlipkartePage from "./pages/FlipkartePage";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/video" element={<VideoPortfolioPage />} />
+            <Route path="/deutsch" element={<FlipkartePage />} />
             <Route path="/research" element={<ResearchPage />} />
             <Route path="/certifications" element={<CertificationsPage />} />
             <Route path="*" element={<NotFound />} />

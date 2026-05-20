@@ -59,6 +59,18 @@
     * {
       cursor: none !important;
     }
+
+    /* German flashcards: normal pointers for controls */
+    .flipkarte-page,
+    .flipkarte-page * {
+      cursor: auto !important;
+    }
+
+    .flipkarte-page button,
+    .flipkarte-page label[for],
+    .flipkarte-page select {
+      cursor: pointer !important;
+    }
   }
 
   html {

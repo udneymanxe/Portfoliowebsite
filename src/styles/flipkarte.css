@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,800;1,9..40,400&display=swap");
+
+.flipkarte-page {
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.flipkarte-font-display {
+  font-family: "Bebas Neue", sans-serif;
+}
+
+@keyframes fk-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes fk-ttsPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(201, 242, 65, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(201, 242, 65, 0);
+  }
+}
+
+@keyframes fk-fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fk-cardEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.fk-animate-fadeUp {
+  animation: fk-fadeUp 0.4s ease;
+}
+
+.fk-animate-cardEnter {
+  animation: fk-cardEnter 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
+}
+
+.fk-perspective {
+  perspective: 1200px;
+}
+
+.fk-flip-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.fk-flip-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.fk-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.fk-face-back {
+  transform: rotateY(180deg);
+}
+
+.fk-tap-dot {
+  animation: fk-pulse 1.8s ease-in-out infinite;
+}
+
+.fk-tts-speaking {
+  animation: fk-ttsPulse 0.8s ease-in-out infinite;
+}
+
+.fk-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
+}

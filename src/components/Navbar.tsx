@@ -21,7 +21,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Home', 'About', 'CV', 'Projects', 'Video', 'Research', 'Certifications', 'Blog', 'Extracurricular', 'Contact'];
+  const navItems = ['Home', 'About', 'CV', 'Projects', 'Video', 'Deutsch', 'Research', 'Certifications', 'Blog', 'Extracurricular', 'Contact'];
 
   const getNavItemHref = (item: string) => {
     const lowercaseItem = item.toLowerCase();
@@ -29,6 +29,7 @@ const Navbar = () => {
     if (item === 'About') return '/about';
     if (item === 'Projects') return '/projects';
     if (item === 'Video') return '/video';
+    if (item === 'Deutsch') return '/deutsch';
     if (item === 'Research') return '/research';
     if (item === 'Certifications') return '/certifications';
     if (item === 'CV') return '/cv';
